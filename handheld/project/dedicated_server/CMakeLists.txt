@@ -2,159 +2,166 @@ cmake_minimum_required(VERSION 3.5)
 
 find_package (Threads)
 
-include_directories("${PROJECT_SOURCE_DIR}/../lib_projects/raknet/jni/RaknetSources")
-add_subdirectory("${PROJECT_SOURCE_DIR}/../lib_projects/raknet/jni" "${CMAKE_CURRENT_BINARY_DIR}/raknet")
+# set(CMAKE_C_FLAGS "-m32")
+# set(CMAKE_CXX_FLAGS "-m32 -std=c++14")
+
+set(HANDHELD_DIR "${PROJECT_SOURCE_DIR}/handheld")
+set(PROJECT_DIR "${HANDHELD_DIR}/project")
+set(SRC_DIR "${HANDHELD_DIR}/src")
+
+include_directories("${PROJECT_DIR}/lib_projects/raknet/jni/RaknetSources")
+add_subdirectory("${PROJECT_DIR}/lib_projects/raknet/jni" "${CMAKE_CURRENT_BINARY_DIR}/raknet")
 add_definitions(-DSTANDALONE_SERVER)
 
-set(CMAKE_C_FLAGS "-m32")
-set(CMAKE_CXX_FLAGS "-m32 -std=c++14")
+set(CompileFiles
+    ${SRC_DIR}/main.cpp
+    ${SRC_DIR}/main_dedicated.cpp
+    ${SRC_DIR}/platform/input/Controller.cpp
+    ${SRC_DIR}/platform/input/Keyboard.cpp
+    ${SRC_DIR}/platform/input/Mouse.cpp
+    ${SRC_DIR}/platform/input/Multitouch.cpp
+    ${SRC_DIR}/platform/time.cpp
+    ${SRC_DIR}/platform/CThread.cpp
+    ${SRC_DIR}/NinecraftApp.cpp
+    ${SRC_DIR}/Performance.cpp
+    ${SRC_DIR}/SharedConstants.cpp
+    ${SRC_DIR}/client/IConfigListener.cpp
+    ${SRC_DIR}/client/Minecraft.cpp
+    ${SRC_DIR}/client/Options.cpp
+    ${SRC_DIR}/client/OptionsFile.cpp
+    ${SRC_DIR}/client/OptionStrings.cpp
+    ${SRC_DIR}/client/gamemode/GameMode.cpp
+    ${SRC_DIR}/client/gamemode/CreativeMode.cpp
+    ${SRC_DIR}/client/gamemode/SurvivalMode.cpp
+    ${SRC_DIR}/client/player/LocalPlayer.cpp
+    ${SRC_DIR}/client/player/RemotePlayer.cpp
+    ${SRC_DIR}/client/player/input/KeyboardInput.cpp
+    ${SRC_DIR}/locale/I18n.cpp
+    ${SRC_DIR}/nbt/Tag.cpp
+    ${SRC_DIR}/network/command/CommandServer.cpp
+    ${SRC_DIR}/network/ClientSideNetworkHandler.cpp
+    ${SRC_DIR}/network/NetEventCallback.cpp
+    ${SRC_DIR}/network/Packet.cpp
+    ${SRC_DIR}/network/RakNetInstance.cpp
+    ${SRC_DIR}/network/ServerSideNetworkHandler.cpp
+    ${SRC_DIR}/server/ArgumentsSettings.cpp
+    ${SRC_DIR}/server/ServerLevel.cpp
+    ${SRC_DIR}/server/ServerPlayer.cpp
+    ${SRC_DIR}/util/DataIO.cpp
+    ${SRC_DIR}/util/Mth.cpp
+    ${SRC_DIR}/util/StringUtils.cpp
+    ${SRC_DIR}/util/PerfTimer.cpp
+    ${SRC_DIR}/world/Direction.cpp
+    ${SRC_DIR}/world/entity/AgableMob.cpp
+    ${SRC_DIR}/world/entity/Entity.cpp
+    ${SRC_DIR}/world/entity/EntityFactory.cpp
+    ${SRC_DIR}/world/entity/FlyingMob.cpp
+    ${SRC_DIR}/world/entity/HangingEntity.cpp
+    ${SRC_DIR}/world/entity/Mob.cpp
+    ${SRC_DIR}/world/entity/MobCategory.cpp
+    ${SRC_DIR}/world/entity/Motive.cpp
+    ${SRC_DIR}/world/entity/Painting.cpp
+    ${SRC_DIR}/world/entity/PathfinderMob.cpp
+    ${SRC_DIR}/world/entity/SynchedEntityData.cpp
+    ${SRC_DIR}/world/entity/ai/control/MoveControl.cpp
+    ${SRC_DIR}/world/entity/animal/Animal.cpp
+    ${SRC_DIR}/world/entity/animal/Chicken.cpp
+    ${SRC_DIR}/world/entity/animal/Cow.cpp
+    ${SRC_DIR}/world/entity/animal/Pig.cpp
+    ${SRC_DIR}/world/entity/animal/Sheep.cpp
+    ${SRC_DIR}/world/entity/animal/WaterAnimal.cpp
+    ${SRC_DIR}/world/entity/item/FallingTile.cpp
+    ${SRC_DIR}/world/entity/item/ItemEntity.cpp
+    ${SRC_DIR}/world/entity/item/PrimedTnt.cpp
+    ${SRC_DIR}/world/entity/item/TripodCamera.cpp
+    ${SRC_DIR}/world/entity/monster/Creeper.cpp
+    ${SRC_DIR}/world/entity/monster/Monster.cpp
+    ${SRC_DIR}/world/entity/monster/PigZombie.cpp
+    ${SRC_DIR}/world/entity/monster/Skeleton.cpp
+    ${SRC_DIR}/world/entity/monster/Spider.cpp
+    ${SRC_DIR}/world/entity/monster/Zombie.cpp
+    ${SRC_DIR}/world/entity/projectile/Arrow.cpp
+    ${SRC_DIR}/world/entity/projectile/Throwable.cpp
+    ${SRC_DIR}/world/entity/player/Inventory.cpp
+    ${SRC_DIR}/world/entity/player/Player.cpp
+    ${SRC_DIR}/world/food/SimpleFoodData.cpp
+    ${SRC_DIR}/world/inventory/BaseContainerMenu.cpp
+    ${SRC_DIR}/world/inventory/ContainerMenu.cpp
+    ${SRC_DIR}/world/inventory/FillingContainer.cpp
+    ${SRC_DIR}/world/inventory/FurnaceMenu.cpp
+    ${SRC_DIR}/world/item/ArmorItem.cpp
+    ${SRC_DIR}/world/item/BedItem.cpp
+    ${SRC_DIR}/world/item/DyePowderItem.cpp
+    ${SRC_DIR}/world/item/Item.cpp
+    ${SRC_DIR}/world/item/ItemInstance.cpp
+    ${SRC_DIR}/world/item/HangingEntityItem.cpp
+    ${SRC_DIR}/world/item/HatchetItem.cpp
+    ${SRC_DIR}/world/item/HoeItem.cpp
+    ${SRC_DIR}/world/item/PickaxeItem.cpp
+    ${SRC_DIR}/world/item/ShovelItem.cpp
+    ${SRC_DIR}/world/item/crafting/ArmorRecipes.cpp
+    ${SRC_DIR}/world/item/crafting/Recipe.cpp
+    ${SRC_DIR}/world/item/crafting/Recipes.cpp
+    ${SRC_DIR}/world/item/crafting/FurnaceRecipes.cpp
+    ${SRC_DIR}/world/item/crafting/OreRecipes.cpp
+    ${SRC_DIR}/world/item/crafting/StructureRecipes.cpp
+    ${SRC_DIR}/world/item/crafting/ToolRecipes.cpp
+    ${SRC_DIR}/world/item/crafting/WeaponRecipes.cpp
+    ${SRC_DIR}/world/level/Explosion.cpp
+    ${SRC_DIR}/world/level/Level.cpp
+    ${SRC_DIR}/world/level/LightLayer.cpp
+    ${SRC_DIR}/world/level/LightUpdate.cpp
+    ${SRC_DIR}/world/level/MobSpawner.cpp
+    ${SRC_DIR}/world/level/Region.cpp
+    ${SRC_DIR}/world/level/TickNextTickData.cpp
+    ${SRC_DIR}/world/level/biome/Biome.cpp
+    ${SRC_DIR}/world/level/biome/BiomeSource.cpp
+    ${SRC_DIR}/world/level/chunk/LevelChunk.cpp
+    ${SRC_DIR}/world/level/dimension/Dimension.cpp
+    ${SRC_DIR}/world/level/levelgen/CanyonFeature.cpp
+    ${SRC_DIR}/world/level/levelgen/DungeonFeature.cpp
+    ${SRC_DIR}/world/level/levelgen/LargeCaveFeature.cpp
+    ${SRC_DIR}/world/level/levelgen/LargeFeature.cpp
+    ${SRC_DIR}/world/level/levelgen/RandomLevelSource.cpp
+    ${SRC_DIR}/world/level/levelgen/feature/Feature.cpp
+    ${SRC_DIR}/world/level/levelgen/synth/ImprovedNoise.cpp
+    ${SRC_DIR}/world/level/levelgen/synth/PerlinNoise.cpp
+    ${SRC_DIR}/world/level/levelgen/synth/Synth.cpp
+    ${SRC_DIR}/world/level/material/Material.cpp
+    ${SRC_DIR}/world/level/pathfinder/Path.cpp
+    ${SRC_DIR}/world/level/storage/ExternalFileLevelStorage.cpp
+    ${SRC_DIR}/world/level/storage/ExternalFileLevelStorageSource.cpp
+    ${SRC_DIR}/world/level/storage/FolderMethods.cpp
+    ${SRC_DIR}/world/level/storage/LevelData.cpp
+    ${SRC_DIR}/world/level/storage/LevelStorageSource.cpp
+    ${SRC_DIR}/world/level/storage/RegionFile.cpp
+    ${SRC_DIR}/world/level/tile/BedTile.cpp
+    ${SRC_DIR}/world/level/tile/ChestTile.cpp
+    ${SRC_DIR}/world/level/tile/CropTile.cpp
+    ${SRC_DIR}/world/level/tile/DoorTile.cpp
+    ${SRC_DIR}/world/level/tile/EntityTile.cpp
+    ${SRC_DIR}/world/level/tile/FurnaceTile.cpp
+    ${SRC_DIR}/world/level/tile/GrassTile.cpp
+    ${SRC_DIR}/world/level/tile/HeavyTile.cpp
+    ${SRC_DIR}/world/level/tile/LightGemTile.cpp
+    ${SRC_DIR}/world/level/tile/MelonTile.cpp
+    ${SRC_DIR}/world/level/tile/Mushroom.cpp
+    ${SRC_DIR}/world/level/tile/NetherReactor.cpp
+    ${SRC_DIR}/world/level/tile/NetherReactorPattern.cpp
+    ${SRC_DIR}/world/level/tile/StairTile.cpp
+    ${SRC_DIR}/world/level/tile/StemTile.cpp
+    ${SRC_DIR}/world/level/tile/StoneSlabTile.cpp
+    ${SRC_DIR}/world/level/tile/TallGrass.cpp
+    ${SRC_DIR}/world/level/tile/Tile.cpp
+    ${SRC_DIR}/world/level/tile/TrapDoorTile.cpp
+    ${SRC_DIR}/world/level/tile/entity/ChestTileEntity.cpp
+    ${SRC_DIR}/world/level/tile/entity/NetherReactorTileEntity.cpp
+    ${SRC_DIR}/world/level/tile/entity/SignTileEntity.cpp
+    ${SRC_DIR}/world/level/tile/entity/TileEntity.cpp
+    ${SRC_DIR}/world/level/tile/entity/FurnaceTileEntity.cpp
+    ${SRC_DIR}/world/phys/HitResult.cpp
+)
 
-set(CompileFiles ../../src/main.cpp
-../../src/main_dedicated.cpp
-../../src/platform/input/Controller.cpp
-../../src/platform/input/Keyboard.cpp
-../../src/platform/input/Mouse.cpp
-../../src/platform/input/Multitouch.cpp
-../../src/platform/time.cpp
-../../src/platform/CThread.cpp
-../../src/NinecraftApp.cpp
-../../src/Performance.cpp
-../../src/SharedConstants.cpp
-../../src/client/IConfigListener.cpp
-../../src/client/Minecraft.cpp
-../../src/client/Options.cpp
-../../src/client/OptionsFile.cpp
-../../src/client/OptionStrings.cpp
-../../src/client/gamemode/GameMode.cpp
-../../src/client/gamemode/CreativeMode.cpp
-../../src/client/gamemode/SurvivalMode.cpp
-../../src/client/player/LocalPlayer.cpp
-../../src/client/player/RemotePlayer.cpp
-../../src/client/player/input/KeyboardInput.cpp
-../../src/locale/I18n.cpp
-../../src/nbt/Tag.cpp
-../../src/network/command/CommandServer.cpp
-../../src/network/ClientSideNetworkHandler.cpp
-../../src/network/NetEventCallback.cpp
-../../src/network/Packet.cpp
-../../src/network/RakNetInstance.cpp
-../../src/network/ServerSideNetworkHandler.cpp
-../../src/server/ArgumentsSettings.cpp
-../../src/server/ServerLevel.cpp
-../../src/server/ServerPlayer.cpp
-../../src/util/DataIO.cpp
-../../src/util/Mth.cpp
-../../src/util/StringUtils.cpp
-../../src/util/PerfTimer.cpp
-../../src/world/Direction.cpp
-../../src/world/entity/AgableMob.cpp
-../../src/world/entity/Entity.cpp
-../../src/world/entity/EntityFactory.cpp
-../../src/world/entity/FlyingMob.cpp
-../../src/world/entity/HangingEntity.cpp
-../../src/world/entity/Mob.cpp
-../../src/world/entity/MobCategory.cpp
-../../src/world/entity/Motive.cpp
-../../src/world/entity/Painting.cpp
-../../src/world/entity/PathfinderMob.cpp
-../../src/world/entity/SynchedEntityData.cpp
-../../src/world/entity/ai/control/MoveControl.cpp
-../../src/world/entity/animal/Animal.cpp
-../../src/world/entity/animal/Chicken.cpp
-../../src/world/entity/animal/Cow.cpp
-../../src/world/entity/animal/Pig.cpp
-../../src/world/entity/animal/Sheep.cpp
-../../src/world/entity/animal/WaterAnimal.cpp
-../../src/world/entity/item/FallingTile.cpp
-../../src/world/entity/item/ItemEntity.cpp
-../../src/world/entity/item/PrimedTnt.cpp
-../../src/world/entity/item/TripodCamera.cpp
-../../src/world/entity/monster/Creeper.cpp
-../../src/world/entity/monster/Monster.cpp
-../../src/world/entity/monster/PigZombie.cpp
-../../src/world/entity/monster/Skeleton.cpp
-../../src/world/entity/monster/Spider.cpp
-../../src/world/entity/monster/Zombie.cpp
-../../src/world/entity/projectile/Arrow.cpp
-../../src/world/entity/projectile/Throwable.cpp
-../../src/world/entity/player/Inventory.cpp
-../../src/world/entity/player/Player.cpp
-../../src/world/food/SimpleFoodData.cpp
-../../src/world/inventory/BaseContainerMenu.cpp
-../../src/world/inventory/ContainerMenu.cpp
-../../src/world/inventory/FillingContainer.cpp
-../../src/world/inventory/FurnaceMenu.cpp
-../../src/world/item/ArmorItem.cpp
-../../src/world/item/BedItem.cpp
-../../src/world/item/DyePowderItem.cpp
-../../src/world/item/Item.cpp
-../../src/world/item/ItemInstance.cpp
-../../src/world/item/HangingEntityItem.cpp
-../../src/world/item/HatchetItem.cpp
-../../src/world/item/HoeItem.cpp
-../../src/world/item/PickaxeItem.cpp
-../../src/world/item/ShovelItem.cpp
-../../src/world/item/crafting/ArmorRecipes.cpp
-../../src/world/item/crafting/Recipe.cpp
-../../src/world/item/crafting/Recipes.cpp
-../../src/world/item/crafting/FurnaceRecipes.cpp
-../../src/world/item/crafting/OreRecipes.cpp
-../../src/world/item/crafting/StructureRecipes.cpp
-../../src/world/item/crafting/ToolRecipes.cpp
-../../src/world/item/crafting/WeaponRecipes.cpp
-../../src/world/level/Explosion.cpp
-../../src/world/level/Level.cpp
-../../src/world/level/LightLayer.cpp
-../../src/world/level/LightUpdate.cpp
-../../src/world/level/MobSpawner.cpp
-../../src/world/level/Region.cpp
-../../src/world/level/TickNextTickData.cpp
-../../src/world/level/biome/Biome.cpp
-../../src/world/level/biome/BiomeSource.cpp
-../../src/world/level/chunk/LevelChunk.cpp
-../../src/world/level/dimension/Dimension.cpp
-../../src/world/level/levelgen/CanyonFeature.cpp
-../../src/world/level/levelgen/DungeonFeature.cpp
-../../src/world/level/levelgen/LargeCaveFeature.cpp
-../../src/world/level/levelgen/LargeFeature.cpp
-../../src/world/level/levelgen/RandomLevelSource.cpp
-../../src/world/level/levelgen/feature/Feature.cpp
-../../src/world/level/levelgen/synth/ImprovedNoise.cpp
-../../src/world/level/levelgen/synth/PerlinNoise.cpp
-../../src/world/level/levelgen/synth/Synth.cpp
-../../src/world/level/material/Material.cpp
-../../src/world/level/pathfinder/Path.cpp
-../../src/world/level/storage/ExternalFileLevelStorage.cpp
-../../src/world/level/storage/ExternalFileLevelStorageSource.cpp
-../../src/world/level/storage/FolderMethods.cpp
-../../src/world/level/storage/LevelData.cpp
-../../src/world/level/storage/LevelStorageSource.cpp
-../../src/world/level/storage/RegionFile.cpp
-../../src/world/level/tile/BedTile.cpp
-../../src/world/level/tile/ChestTile.cpp
-../../src/world/level/tile/CropTile.cpp
-../../src/world/level/tile/DoorTile.cpp
-../../src/world/level/tile/EntityTile.cpp
-../../src/world/level/tile/FurnaceTile.cpp
-../../src/world/level/tile/GrassTile.cpp
-../../src/world/level/tile/HeavyTile.cpp
-../../src/world/level/tile/LightGemTile.cpp
-../../src/world/level/tile/MelonTile.cpp
-../../src/world/level/tile/Mushroom.cpp
-../../src/world/level/tile/NetherReactor.cpp
-../../src/world/level/tile/NetherReactorPattern.cpp
-../../src/world/level/tile/StairTile.cpp
-../../src/world/level/tile/StemTile.cpp
-../../src/world/level/tile/StoneSlabTile.cpp
-../../src/world/level/tile/TallGrass.cpp
-../../src/world/level/tile/Tile.cpp
-../../src/world/level/tile/TrapDoorTile.cpp
-../../src/world/level/tile/entity/ChestTileEntity.cpp
-../../src/world/level/tile/entity/NetherReactorTileEntity.cpp
-../../src/world/level/tile/entity/SignTileEntity.cpp
-../../src/world/level/tile/entity/TileEntity.cpp
-../../src/world/level/tile/entity/FurnaceTileEntity.cpp
-../../src/world/phys/HitResult.cpp)
 message(${CMAKE_LIBRARY_ARCHITECTURE})
-add_executable(mcpe_server ${CompileFiles})
-target_link_libraries(mcpe_server raknet ${CMAKE_THREAD_LIBS_INIT})
+add_executable(pewiku_server ${CompileFiles})
+target_link_libraries(pewiku_server raknet ${CMAKE_THREAD_LIBS_INIT})

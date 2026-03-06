@@ -419,3 +419,5 @@ FodyWeavers.xsd
 *.msp
 
 /__
+/level
+/options.txt

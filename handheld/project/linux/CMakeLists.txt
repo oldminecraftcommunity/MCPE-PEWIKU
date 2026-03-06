@@ -1,13 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(pewiku_linux LANGUAGES C CXX)
-
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(HANDHELD_DIR "${CMAKE_CURRENT_LIST_DIR}/../..")
+set(HANDHELD_DIR "${PROJECT_SOURCE_DIR}/handheld")
 set(SRC_DIR "${HANDHELD_DIR}/src")
 
 file(GLOB_RECURSE PEWIKU_SOURCES CONFIGURE_DEPENDS
@@ -35,14 +28,14 @@ set(PEWIKU_EXCLUDED_SOURCES
 )
 list(REMOVE_ITEM PEWIKU_SOURCES ${PEWIKU_EXCLUDED_SOURCES})
 
-add_executable(pewiku ${PEWIKU_SOURCES})
+add_executable(pewiku_linux ${PEWIKU_SOURCES})
 
-target_include_directories(pewiku PRIVATE
+target_include_directories(pewiku_linux PRIVATE
     "${SRC_DIR}"
     "${SRC_DIR}/raknet"
 )
 
-target_compile_definitions(pewiku PRIVATE
+target_compile_definitions(pewiku_linux PRIVATE
     LINUX
     POSIX
     OPENGL_ES
@@ -54,7 +47,7 @@ find_package(PNG REQUIRED)
 find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 find_library(GLES1_LIBRARY NAMES GLESv1_CM REQUIRED)
 
-target_link_libraries(pewiku PRIVATE
+target_link_libraries(pewiku_linux PRIVATE
     Threads::Threads
     X11::X11
     PNG::PNG
@@ -64,7 +57,7 @@ target_link_libraries(pewiku PRIVATE
     m
 )
 
-add_custom_command(TARGET pewiku POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E rm -rf "$<TARGET_FILE_DIR:pewiku>/data"
-    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${HANDHELD_DIR}/data" "$<TARGET_FILE_DIR:pewiku>/data"
+add_custom_command(TARGET pewiku_linux POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E rm -rf "$<TARGET_FILE_DIR:pewiku_linux>/data"
+    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${HANDHELD_DIR}/data" "$<TARGET_FILE_DIR:pewiku_linux>/data"
 )
