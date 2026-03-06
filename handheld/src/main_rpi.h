@@ -1,9 +1,10 @@
 #ifndef MAIN_RPI_H__
 #define MAIN_RPI_H__
 
+
 #include <cassert>
 
-#include "bcm_host.h"
+// #include "bcm_host.h"
 
 //#include "GLES/gl.h"
 #include "EGL/egl.h"
@@ -12,17 +13,22 @@
 #include <fstream>
 #include <png.h>
 
-#include <SDL/SDL.h>
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_video.h>
 #define check() assert(glGetError() == 0)
 
 #include "App.h"
 #include "platform/input/Mouse.h"
 #include "platform/input/Multitouch.h"
 #include "platform/input/Keyboard.h"
+#include <string>
+#include <unistd.h>
 
 int width = 848;
 int height = 480;
+SDL_Window* nativewindow;
+SDL_GLContext glcontext;
 
 static void png_funcReadFile(png_structp pngPtr, png_bytep data, png_size_t length) {
 	((std::istream*)png_get_io_ptr(pngPtr))->read((char*)data, length);
@@ -55,7 +61,7 @@ public:
 		}
 
 		// Hack to get around the broken libpng for windows
-		png_set_read_fn(pngPtr,(voidp)&source, png_funcReadFile);
+		png_set_read_fn(pngPtr,(void*)&source, png_funcReadFile);
 
 		png_read_info(pngPtr, infoPtr);
 
@@ -123,14 +129,13 @@ void move_surface(App* app, AppContext* state, uint32_t x, uint32_t y, uint32_t 
    deinitEgl(state);
    //printf("initEgl\n");
 
-   static EGL_DISPMANX_WINDOW_T nativewindow;
 
-   DISPMANX_ELEMENT_HANDLE_T dispman_element;
-   DISPMANX_DISPLAY_HANDLE_T dispman_display;
-   DISPMANX_UPDATE_HANDLE_T dispman_update;
-   VC_RECT_T dst_rect;
-   VC_RECT_T src_rect;
-
+   SDL_Texture* dispman_element;
+   SDL_DisplayMode dispman_display;
+   // DISPMANX_UPDATE_HANDLE_T dispman_update;
+   SDL_Rect dst_rect;
+   SDL_Rect src_rect;
+	// SDL_Renderer* renderer = SDL_CreateRe
    static const EGLint attribute_list[] =
    {
       EGL_RED_SIZE, 8,
@@ -141,79 +146,81 @@ void move_surface(App* app, AppContext* state, uint32_t x, uint32_t y, uint32_t 
       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
       EGL_NONE
    };
-   
-   static const EGLint context_attributes[] = 
+
+   static const EGLint context_attributes[] =
    {
       EGL_CONTEXT_CLIENT_VERSION, 1,
       EGL_NONE
    };
    EGLConfig config;
+   glcontext = SDL_GL_CreateContext(nativewindow);
+   SDL_GL_MakeCurrent(nativewindow, glcontext);
 
-   // get an EGL display connection
+//
+//    // get an EGL display connection
    state->display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-   assert(state->display!=EGL_NO_DISPLAY);
-   check();
-
-   // initialize the EGL display connection
+//    assert(state->display!=EGL_NO_DISPLAY);
+//    // check();
+//    // initialize the EGL display connection
    result = eglInitialize(state->display, NULL, NULL);
-   assert(EGL_FALSE != result);
-   check();
-
-   // get an appropriate EGL frame buffer configuration
+//    assert(EGL_FALSE != result);
+//    // check();
+//
+//    // get an appropriate EGL frame buffer configuration
    result = eglChooseConfig(state->display, attribute_list, &config, 1, &num_config);
-   assert(EGL_FALSE != result);
-   check();
-
-   // get an appropriate EGL frame buffer configuration
+//    assert(EGL_FALSE != result);
+//    // check();
+//
+//    // get an appropriate EGL frame buffer configuration
    result = eglBindAPI(EGL_OPENGL_ES_API);
-   assert(EGL_FALSE != result);
-   check();
-
+//    assert(EGL_FALSE != result);
+   // check();
    // create an EGL rendering context
    state->context = eglCreateContext(state->display, config, EGL_NO_CONTEXT, context_attributes);
-   assert(state->context!=EGL_NO_CONTEXT);
-   check();
+   // assert(state->context!=EGL_NO_CONTEXT);
+   // check();
+
 
    // create an EGL window surface
    uint32_t dw, dh;
-   success = graphics_get_display_size(0 /* LCD */, &dw, &dh);
+   // success = graphics_get_display_size(0 /* LCD */, &dw, &dh);
    assert( success >= 0 );
 
    dst_rect.x = x;
    dst_rect.y = y;
-   dst_rect.width = w;
-   dst_rect.height = h;
-      
+   dst_rect.w = w;
+   dst_rect.h = h;
+//
    src_rect.x = 0;
    src_rect.y = 0;
-   src_rect.width = w << 16;
-   src_rect.height = h << 16;
+   src_rect.w = w << 16;
+   src_rect.h = h << 16;
 
-   dispman_display = vc_dispmanx_display_open( 0 /* LCD */);
-   dispman_update = vc_dispmanx_update_start( 0 );
-         
-   dispman_element = vc_dispmanx_element_add ( dispman_update, dispman_display,
-      0/*layer*/, &dst_rect, 0/*src*/,
-      &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, (DISPMANX_TRANSFORM_T)0/*transform*/);
-      
-   nativewindow.element = dispman_element;
-   nativewindow.width = w;//state->screen_width;
-   nativewindow.height = h;//state->screen_height;
-   vc_dispmanx_update_submit_sync( dispman_update );
-      
-   check();
+	SDL_GetDisplayMode( 0,  0, &dispman_display/* LCD */);
 
-   state->surface = eglCreateWindowSurface( state->display, config, &nativewindow, NULL );
-   assert(state->surface != EGL_NO_SURFACE);
-   check();
+   // dispman_element = vc_dispmanx_element_add ( dispman_update, dispman_display,
+   //    0/*layer*/, &dst_rect, 0/*src*/,
+   //    &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, (DISPMANX_TRANSFORM_T)0/*transform*/);
+	// SDL_RenderCopy(renderer, texture, &src, &dst);
+   // nativewindow.element = dispman_element;
+	SDL_SetWindowSize(nativewindow, w, h);
+   // nativewindow.width = w;//state->screen_width;
+   // nativewindow.height = h;//state->screen_height;
+   // vc_dispmanx_update_submit_sync( dispman_update );
+   // check();
+
+   state->surface = eglGetCurrentSurface(EGL_DRAW);
+   // assert(state->surface != EGL_NO_SURFACE);
+   // check();
 
    // connect the context to the surface
    result = eglMakeCurrent(state->display, state->surface, state->surface, state->context);
-   assert(EGL_FALSE != result);
-   check();
+   // assert(EGL_FALSE != result);
+   // check();
    
    _inited_egl = true;
-   
+
+
    if (!_app_inited) {
    	_app_inited = true;
    	app->init(*state);
@@ -225,18 +232,19 @@ void move_surface(App* app, AppContext* state, uint32_t x, uint32_t y, uint32_t 
 
 void teardown() {
 	SDL_Quit();
-	bcm_host_deinit();
+	// bcm_host_deinit();
 }
 
-/*
+
 static bool isGrabbed = false;
 static void setGrabbed(bool status) {
-	SDL_WM_GrabInput(status? SDL_GRAB_ON : SDL_GRAB_OFF);
+	//SDL_WM_GrabInput(status? SDL_GRAB_ON : SDL_GRAB_OFF);
 	SDL_ShowCursor  (status? 0 : 1);
+	SDL_SetWindowGrab(nativewindow, status? SDL_FALSE : SDL_TRUE);
 	isGrabbed = status;
 	printf("set grabbed: %d\n", isGrabbed);
 }
-*/
+
 
 static unsigned char transformKey(int key) {
 	// Handle ALL keys here. If not handled -> return 0 ("invalid")
@@ -277,27 +285,27 @@ int handleEvents() {
 			if (transformed) Keyboard::feed(transformed, 0);
 		}
 		if (SDL_MOUSEBUTTONDOWN == event.type) {
-			if (SDL_BUTTON_WHEELUP == event.button.button) {
+			/*if (event.wheel.direction > 0) {
 				Mouse::feed(3, 0, event.button.x, event.button.y, 0, 1);
 			} else
-			if (SDL_BUTTON_WHEELDOWN == event.button.button) {
+			if (event.wheel.direction < 0) {
 				Mouse::feed(3, 0, event.button.x, event.button.y, 0, -1);
-			} else {
+			} else */{
 				bool left = SDL_BUTTON_LEFT == event.button.button;
 				char button = left? 1 : 2;
 				Mouse::feed(button, 1, event.button.x, event.button.y);
-				Multitouch::feed(button, 1, event.button.x, event.button.y, 0);
+				// Multitouch::feed(button, 1, event.button.x, event.button.y, 0);
 
-				//if (!isGrabbed) setGrabbed(true);
+				 // if (!isGrabbed) setGrabbed(true);
 			}
 		}
 		if (SDL_MOUSEBUTTONUP == event.type) {
 			bool left = SDL_BUTTON_LEFT == event.button.button;
 			char button = left? 1 : 2;//MouseAction::ACTION_LEFT : MouseAction::ACTION_RIGHT;
 			Mouse::feed(button, 0, event.button.x, event.button.y);
-			Multitouch::feed(button, 0, event.button.x, event.button.y, 0);
+			// Multitouch::feed(button, 0, event.button.x, event.button.y, 0);
 
-			//if (!isGrabbed) setGrabbed(true);
+			// if (!isGrabbed) setGrabbed(true);
 		}
 		if (SDL_MOUSEMOTION == event.type) {
 			//printf("mouse: %d, %d\n",  event.motion.xrel, event.motion.yrel);
@@ -311,8 +319,13 @@ int handleEvents() {
 				Mouse::feed(0, 0, x, y, 0, 0);
 			}
 		}
-		if  (SDL_ACTIVEEVENT == event.type) {
-			if (SDL_APPACTIVE & event.active.state) _app_window_normal = event.active.gain;
+		if  (SDL_WINDOWEVENT == event.type) {
+			if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+				_app_window_normal = 0;
+			}
+			else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+				_app_window_normal = 1;
+			}
 			//printf("state: %d (%d), %d, %d, %d\n", event.active.state, event.active.gain, SDL_APPACTIVE, SDL_APPMOUSEFOCUS, SDL_APPINPUTFOCUS);
 		}
 /*
@@ -325,7 +338,7 @@ int handleEvents() {
 	return 0;
 }
 
-void getWindowPosition(int* x, int* y, int* w, int* h);
+void getWindowPosition(int* x, int* y, int* w, int* h, SDL_Window *window);
 
 void updateWindowPosition(App* app, AppContext* state) {
 	static int lx = -999, ly = -999;
@@ -334,7 +347,6 @@ void updateWindowPosition(App* app, AppContext* state) {
 	static bool lastWindowNormal = true;
 	static bool allowCreate = true;
 	int x, y;
-	getWindowPosition(&x, &y, &width, &height);
 
 	if (x != lx || y != ly || width != lw || height != lh) {
 		lx = x;
@@ -362,25 +374,28 @@ void updateWindowPosition(App* app, AppContext* state) {
 			deinitEgl(state);
 			lx = ly = -10000;
 		}
+
 //			move_surface(app, state, 0, 0, 0, 0);
 	}
+	//move_surface(app, state, x, y, width, height);
 }
 
 int main(int argc, char** argv) {
-	bcm_host_init();
+	// bcm_host_init();
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("Couldn't initialize SDL\n");
 		return -1;
 	}
 
-	SDL_Surface* sdlSurface = SDL_SetVideoMode(width,height,32,SDL_SWSURFACE|SDL_RESIZABLE);
-	if (sdlSurface == NULL) {
-		printf("Couldn't create SDL window\n");
-		return -2;
-	}
+	// SDL_Surface* sdlSurface = SDL_CreateSurface(width,height,32,SDL_SWSURFACE|SDL_WINDOW_RESIZABLE);
+	// if (sdlSurface == NULL) {
+	// 	printf("Couldn't create SDL window\n");
+	// 	return -2;
+	// }
 
 	//printf("argv[0]: %s\n", argv[0]);
+	nativewindow = SDL_CreateWindow("minecraftpe", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_SWSURFACE|SDL_WINDOW_RESIZABLE);
 
 	std::string path = argv[0];
 	int e = path.rfind('/');
@@ -396,7 +411,7 @@ int main(int argc, char** argv) {
 	//printf("HOME: %s\n", getenv("HOME"));
 
 	atexit(teardown);
-	SDL_WM_SetCaption("Minecraft - Pi edition", 0);
+	// SDL_WM_SetCaption("Minecraft - Pi edition", 0);
 	//setGrabbed(false);;
 
 	MAIN_CLASS* app = new MAIN_CLASS();
@@ -429,6 +444,7 @@ int main(int argc, char** argv) {
 
 		running = handleEvents() == 0;
 		app->update();
+	   	SDL_GL_SwapWindow(nativewindow);
 	}
 
 	deinitEgl(&context);

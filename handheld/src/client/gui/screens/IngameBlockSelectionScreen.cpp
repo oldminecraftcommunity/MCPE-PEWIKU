@@ -192,7 +192,7 @@ void IngameBlockSelectionScreen::keyPressed(int eventKey)
 	if (eventKey == o.keyMenuOk.key)
 		selectSlotAndClose();
 
-#ifdef RPI
+#if defined(RPI) || defined(WIN32) || defined(POSIX)
 	if (eventKey == o.keyMenuCancel.key
 		||	eventKey == Keyboard::KEY_ESCAPE)
 		minecraft->setScreen(NULL);

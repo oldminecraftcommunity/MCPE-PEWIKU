@@ -116,7 +116,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse) {
 #if !defined(RPI)
 	renderOnSelectItemNameText(screenWidth, font, ySlot);
 #endif
-#if defined(RPI)
+#if defined(DEBUG)
 	renderDebugInfo();
 #endif
 

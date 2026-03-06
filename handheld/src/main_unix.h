@@ -35,6 +35,10 @@
 #include <vector>
 
 static bool g_running_unix = true;
+static bool g_mouseGrabbed = false;
+static Cursor g_invisibleCursor = None;
+static int g_lastX = 0;
+static int g_lastY = 0;
 
 static bool loadNetWmIcon(const std::string& path, std::vector<unsigned long>& iconData) {
 	std::ifstream source(path.c_str(), std::ios::binary);
@@ -104,89 +108,146 @@ static bool loadNetWmIcon(const std::string& path, std::vector<unsigned long>& i
 	return true;
 }
 
-static void handleXEvent(Display* dpy, XEvent& ev, App* app) {
-	switch (ev.type) {
-	case ClientMessage:
-		g_running_unix = false;
-		break;
-	case ConfigureNotify: {
-		if (app) {
-			app->setSize(ev.xconfigure.width, ev.xconfigure.height);
-		}
-		break;
-	}
-	case KeyPress: {
-		KeySym keysym = XLookupKeysym(&ev.xkey, 0);
-		// Basic ESC handling to allow graceful quit
-		if (keysym == XK_Escape) {
-			Keyboard::feed(Keyboard::KEY_ESCAPE, 1);
-		} else {
-			char buf[8];
-			int len = XLookupString(&ev.xkey, buf, sizeof(buf), nullptr, nullptr);
-			for (int i = 0; i < len; ++i) {
-				unsigned char ch = static_cast<unsigned char>(buf[i]);
-				if (ch >= 32) {
-					Keyboard::feed(ch, 1);
-					Keyboard::feedText(ch);
-				}
-			}
-		}
-		break;
-	}
-	case KeyRelease: {
-		KeySym keysym = XLookupKeysym(&ev.xkey, 0);
-		if (keysym == XK_Escape) {
-			Keyboard::feed(Keyboard::KEY_ESCAPE, 0);
-		} else {
-			char buf[8];
-			int len = XLookupString(&ev.xkey, buf, sizeof(buf), nullptr, nullptr);
-			for (int i = 0; i < len; ++i) {
-				unsigned char ch = static_cast<unsigned char>(buf[i]);
-				if (ch >= 32) {
-					Keyboard::feed(ch, 0);
-				}
-			}
-		}
-		break;
-	}
-	case ButtonPress: {
-		int button = ev.xbutton.button;
-		int x = ev.xbutton.x;
-		int y = ev.xbutton.y;
-		int action = 0;
-		if (button == Button1) action = 1; // left
-		else if (button == Button3) action = 2; // right
-		if (action) {
-			Mouse::feed(action, 1, x, y);
-			Multitouch::feed(action, 1, x, y, 0);
-		}
-		break;
-	}
-	case ButtonRelease: {
-		int button = ev.xbutton.button;
-		int x = ev.xbutton.x;
-		int y = ev.xbutton.y;
-		int action = 0;
-		if (button == Button1) action = 1;
-		else if (button == Button3) action = 2;
-		if (action) {
-			Mouse::feed(action, 0, x, y);
-			Multitouch::feed(action, 0, x, y, 0);
-		}
-		break;
-	}
-	case MotionNotify: {
-		int x = ev.xmotion.x;
-		int y = ev.xmotion.y;
-		// X11 doesn't provide relative deltas here reliably without pointer-grab;
-		// feed 0 deltas to match other non-grabbed implementations.
-		Mouse::feed(0, 0, x, y, 0, 0);
-		Multitouch::feed(0, 0, x, y, 0);
-		break;
-	}
-	default:
-		break;
-	}
+static void setMouseGrab(Display* dpy, Window win, bool grab) {
+    if (grab == g_mouseGrabbed) return;
+    g_mouseGrabbed = grab;
+
+    if (grab) {
+        // hide cursor
+        if (g_invisibleCursor == None) {
+            char data[1] = {0};
+            Pixmap blank = XCreateBitmapFromData(dpy, win, data, 1, 1);
+            XColor dummy;
+            g_invisibleCursor = XCreatePixmapCursor(dpy, blank, blank, &dummy, &dummy, 0, 0);
+            XFreePixmap(dpy, blank);
+        }
+        XDefineCursor(dpy, win, g_invisibleCursor);
+
+		// grab
+        XGrabPointer(dpy, win, True, 0, GrabModeAsync, GrabModeAsync, win, None, CurrentTime);
+        
+		// reset center
+        XWindowAttributes wa;
+        XGetWindowAttributes(dpy, win, &wa);
+        g_lastX = wa.width / 2;
+        g_lastY = wa.height / 2;
+        XWarpPointer(dpy, None, win, 0, 0, 0, 0, g_lastX, g_lastY);
+    } else {
+        XUndefineCursor(dpy, win);
+        XUngrabPointer(dpy, CurrentTime);
+    }
+}
+
+static void handleXEvent(Display* dpy, Window win, XEvent& ev, App* app) {
+    switch (ev.type) {
+    case ClientMessage:
+        g_running_unix = false;
+        break;
+    case ConfigureNotify: {
+        if (app) {
+            app->setSize(ev.xconfigure.width, ev.xconfigure.height);
+        }
+        break;
+    }
+    case KeyPress: {
+        KeySym keysym = XLookupKeysym(&ev.xkey, 0);
+        // Basic ESC handling
+        if (keysym == XK_Escape) {
+            if (g_mouseGrabbed) {
+                setMouseGrab(dpy, win, false);
+                Keyboard::feed(Keyboard::KEY_ESCAPE, 0);
+                Keyboard::feed(Keyboard::KEY_ESCAPE, 1);
+            } else {
+                Keyboard::feed(Keyboard::KEY_ESCAPE, 1);
+            }
+        } else {
+            char buf[8];
+            int len = XLookupString(&ev.xkey, buf, sizeof(buf), nullptr, nullptr);
+            for (int i = 0; i < len; ++i) {
+                unsigned char ch = static_cast<unsigned char>(buf[i]);
+                if (ch >= 32) {
+                    Keyboard::feed(ch, 1);
+                    Keyboard::feedText(ch);
+                }
+            }
+        }
+        break;
+    }
+    case KeyRelease: {
+        KeySym keysym = XLookupKeysym(&ev.xkey, 0);
+        if (keysym == XK_Escape) {
+            Keyboard::feed(Keyboard::KEY_ESCAPE, 0);
+        } else {
+            char buf[8];
+            int len = XLookupString(&ev.xkey, buf, sizeof(buf), nullptr, nullptr);
+            for (int i = 0; i < len; ++i) {
+                unsigned char ch = static_cast<unsigned char>(buf[i]);
+                if (ch >= 32) {
+                    Keyboard::feed(ch, 0);
+                }
+            }
+        }
+        break;
+    }
+    case ButtonPress: {
+        // window click - grab mouse
+        if (!g_mouseGrabbed) {
+            setMouseGrab(dpy, win, true);
+        }
+
+        int button = ev.xbutton.button;
+        int x = ev.xbutton.x;
+        int y = ev.xbutton.y;
+        int action = 0;
+        if (button == Button1) action = 1; // left
+        else if (button == Button3) action = 2; // right
+        if (action) {
+            Mouse::feed(action, 1, x, y);
+            Multitouch::feed(action, 1, x, y, 0);
+        }
+        break;
+    }
+    case ButtonRelease: {
+        int button = ev.xbutton.button;
+        int x = ev.xbutton.x;
+        int y = ev.xbutton.y;
+        int action = 0;
+        if (button == Button1) action = 1;
+        else if (button == Button3) action = 2;
+        if (action) {
+            Mouse::feed(action, 0, x, y);
+            Multitouch::feed(action, 0, x, y, 0);
+        }
+        break;
+    }
+    case MotionNotify: {
+        int x = ev.xmotion.x;
+        int y = ev.xmotion.y;
+
+        if (g_mouseGrabbed) {
+            int dx = x - g_lastX;
+            int dy = y - g_lastY;
+
+            if (dx != 0 || dy != 0) {
+                Mouse::feed(0, 0, x, y, dx, dy);
+                Multitouch::feed(0, 0, x, y, 0);
+
+                // Center cursor
+                XWindowAttributes wa;
+                XGetWindowAttributes(dpy, win, &wa);
+                g_lastX = wa.width / 2;
+                g_lastY = wa.height / 2;
+                XWarpPointer(dpy, None, win, 0, 0, 0, 0, g_lastX, g_lastY);
+            }
+        } else {
+            Mouse::feed(0, 0, x, y, 0, 0);
+            Multitouch::feed(0, 0, x, y, 0);
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 int main(int argc, char** argv) {
@@ -410,7 +471,7 @@ int main(int argc, char** argv) {
 		while (XPending(dpy)) {
 			XEvent ev;
 			XNextEvent(dpy, &ev);
-			handleXEvent(dpy, ev, app);
+			handleXEvent(dpy, win, ev, app);
 		}
 
 		app->update();

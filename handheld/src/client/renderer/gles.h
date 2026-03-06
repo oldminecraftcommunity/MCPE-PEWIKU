@@ -28,8 +28,8 @@
 	   #include <WinSock2.h>
 	   #include <Windows.h>
 	#endif
-	#include <gl/glew.h>
-	#include <gl/GL.h>
+	#include <GL/glew.h>
+	#include <GL/gl.h>
 
 	#define glFogx(a,b)	glFogi(a,b)
 	#define glOrthof(a,b,c,d,e,f) glOrtho(a,b,c,d,e,f)

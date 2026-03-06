@@ -715,7 +715,7 @@ void Minecraft::tickInput() {
 					#endif
 				}
 			#endif
-			#if defined(RPI) || defined (POSIX)
+			#if defined(RPI) || defined(WIN32) || defined(POSIX)
 				if (key == Keyboard::KEY_E) {
 					screenChooser.setScreen(SCREEN_BLOCKSELECTION);
 				}
@@ -848,7 +848,7 @@ void Minecraft::tickInput() {
 				}
 			#endif
 		}
-		#ifdef WIN32
+		#ifdef DEBUG
 			if (key == Keyboard::KEY_M) {
 				for (int i = 0; i < 5 * SharedConstants::TicksPerSecond; ++i)
 					level->tick();
@@ -892,7 +892,7 @@ void Minecraft::tickInput() {
 		||	(buildHandled && bai.isRemove());
 
 	TIMER_POP_PUSH("handlemouse");
-#ifdef RPI
+#if defined(RPI) || defined(WIN32) || defined(POSIX)
 	handleMouseDown(MouseAction::ACTION_LEFT, isTryingToDestroyBlock);
 	handleMouseClick(buildHandled && bai.isInteract()
 		|| options.useMouseForDigging && Mouse::isButtonDown(MouseAction::ACTION_RIGHT));
@@ -1243,7 +1243,15 @@ void Minecraft::_reloadInput() {
 	delete inputHolder;
 
 	if (useTouchscreen()) {
-		inputHolder = new TouchInputHolder(this, &options);
+		#if defined(WIN32) || defined(POSIX)
+			inputHolder = new CustomInputHolder(
+				new KeyboardInput(&options),
+				new MouseTurnInput(MouseTurnInput::MODE_DELTA, width/2, height/2),
+				new MouseBuildInput()
+			);
+		#else
+			inputHolder = new TouchInputHolder(this, &options);
+		#endif
 	} else {
 		#if defined(ANDROID) || defined(__APPLE__) 
 			inputHolder = new CustomInputHolder(

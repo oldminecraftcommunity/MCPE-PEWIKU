@@ -9,7 +9,7 @@ build-all: build-client build-server
 
 deps:
 	@echo "Debian/Ubuntu dependencies:"
-	@echo "  sudo apt install build-essential cmake libx11-dev libegl1-mesa-dev libgles1-mesa-dev libpng-dev"
+	@echo "  sudo apt install build-essential cmake libx11-dev libegl1-mesa-dev libgles1-mesa-dev libpng-dev libglew-dev libsdl2-dev libgles-dev libegl-dev pkg-config"
 
 configure:
 	$(CMAKE) -S . -B $(BUILD_DIR) -DDEBUG=$(DEBUG)

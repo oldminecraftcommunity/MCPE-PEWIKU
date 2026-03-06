@@ -655,7 +655,12 @@ void GameRenderer::pick(float a) {
 
     bool freeform = mc->useTouchscreen()  && !mc->options.isJoyTouchArea;
     if (freeform) {
-        isPicking = updateFreeformPickDirection(a, pickDirection);
+        #if defined(WIN32) || defined(POSIX)
+            isPicking = updateFreeformPickDirection(a, pickDirection);
+        #else
+            mc->hitResult = mc->cameraTargetPlayer->pick(range, a);
+            pickDirection = mc->cameraTargetPlayer->getViewVector(a);
+        #endif
     } else {
         mc->hitResult = mc->cameraTargetPlayer->pick(range, a);
         pickDirection = mc->cameraTargetPlayer->getViewVector(a);

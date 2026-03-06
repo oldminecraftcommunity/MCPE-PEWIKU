@@ -45,13 +45,17 @@ target_compile_definitions(pewiku_linux PRIVATE
 find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
 find_package(PNG REQUIRED)
+# find_package(GLEW REQUIRED)
+find_package(SDL2 REQUIRED)
 find_library(EGL_LIBRARY NAMES EGL REQUIRED)
-find_library(GLES1_LIBRARY NAMES GLESv1_CM REQUIRED)
+find_library(GLES_LIBRARY NAMES GLESv1_CM GLESv2 GLES REQUIRED)
 
 target_link_libraries(pewiku_linux PRIVATE
     Threads::Threads
     X11::X11
     PNG::PNG
+#    GLEW::GLEW
+    SDL2::SDL2
     ${EGL_LIBRARY}
     ${GLES1_LIBRARY}
     dl
