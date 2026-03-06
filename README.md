@@ -8,6 +8,7 @@ Right now this project corresponds to Minecraft Pocket Edition v0.6.1
 - Saving MCPE experience from gameplay  
 
 **Tasks is right now:**  
+- Controls on PC
 - Fix bugs  
 - Add Unix building  
 - Polish Android building  
