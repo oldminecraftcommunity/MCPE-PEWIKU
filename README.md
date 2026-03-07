@@ -1,7 +1,7 @@
 # Pewiku
 **Whats it?**  
 Implementation of a block-based game inspired by Minecraft.  
-Right now this project corresponds to Minecraft Pocket Edition v0.6.1  
+Right now this project corresponds to Minecraft Pocket Edition v0_6_2  
 
 **Goals:**  
 - Full compliance with MCPE 0.7 & 0.8  

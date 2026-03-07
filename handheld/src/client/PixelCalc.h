@@ -3,7 +3,6 @@
 //  minecraftpe
 //
 //  Created by rhino on 10/24/11.
-//  Copyright (c) 2011 Mojang AB. All rights reserved.
 //
 
 #ifndef minecraftpe_PixelCalc_h

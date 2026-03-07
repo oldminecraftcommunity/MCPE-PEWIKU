@@ -3,7 +3,6 @@
 //  minecraftpe
 //
 //  Created by rhino on 10/20/11.
-//  Copyright 2011 Mojang. All rights reserved.
 //
 
 #import "RenameMPWorldViewController.h"
