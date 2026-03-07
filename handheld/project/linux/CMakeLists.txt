@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(HANDHELD_DIR "${PROJECT_SOURCE_DIR}/handheld")
+project(pewiku_linux LANGUAGES C CXX)
+
+set(HANDHELD_DIR "${CMAKE_SOURCE_DIR}/handheld")
 set(SRC_DIR "${HANDHELD_DIR}/src")
 
 file(GLOB_RECURSE PEWIKU_SOURCES CONFIGURE_DEPENDS
@@ -29,18 +31,17 @@ set(PEWIKU_EXCLUDED_SOURCES
 list(REMOVE_ITEM PEWIKU_SOURCES ${PEWIKU_EXCLUDED_SOURCES})
 
 message(${CMAKE_LIBRARY_ARCHITECTURE})
-add_executable(pewiku_linux ${PEWIKU_SOURCES})
+add_executable(${PROJECT_NAME} ${PEWIKU_SOURCES})
 
-target_include_directories(pewiku_linux PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
     "${SRC_DIR}"
     "${SRC_DIR}/raknet"
 )
 
-target_compile_definitions(pewiku_linux PRIVATE
-    LINUX
-    POSIX
-    OPENGL_ES
-)
+target_compile_definitions(${PROJECT_NAME} PRIVATE OPENGL_ES)
+if(WIN32 OR (UNIX AND NOT APPLE AND NOT ANDROID))
+    add_compile_definitions(PLATFORM_DESKTOP)
+endif()
 
 find_package(Threads REQUIRED)
 find_package(X11 REQUIRED)
@@ -50,19 +51,19 @@ find_package(SDL2 REQUIRED)
 find_library(EGL_LIBRARY NAMES EGL REQUIRED)
 find_library(GLES_LIBRARY NAMES GLESv1_CM GLESv2 GLES REQUIRED)
 
-target_link_libraries(pewiku_linux PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Threads::Threads
     X11::X11
     PNG::PNG
 #    GLEW::GLEW
     SDL2::SDL2
     ${EGL_LIBRARY}
-    ${GLES1_LIBRARY}
+    ${GLES_LIBRARY}
     dl
     m
 )
 
-add_custom_command(TARGET pewiku_linux POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E rm -rf "$<TARGET_FILE_DIR:pewiku_linux>/data"
-    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${HANDHELD_DIR}/data" "$<TARGET_FILE_DIR:pewiku_linux>/data"
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E rm -rf "$<TARGET_FILE_DIR:${PROJECT_NAME}>/data"
+    COMMAND "${CMAKE_COMMAND}" -E create_symlink "${HANDHELD_DIR}/data" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/data"
 )

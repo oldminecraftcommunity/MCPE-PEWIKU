@@ -422,3 +422,5 @@ FodyWeavers.xsd
 /level
 /options.txt
 **/build_debug/
+
+.vscode

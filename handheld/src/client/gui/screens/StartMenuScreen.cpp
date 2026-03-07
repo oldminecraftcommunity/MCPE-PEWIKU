@@ -45,7 +45,7 @@ void StartMenuScreen::init()
 	tabButtons.push_back(&bHost);
 	tabButtons.push_back(&bJoin);
 
-	#ifndef RPI
+	#ifndef PLATFORM_DESKTOP
 		buttons.push_back(&bOptions);
 		tabButtons.push_back(&bOptions);
 	#endif
@@ -89,7 +89,7 @@ void StartMenuScreen::setupPositions() {
 
 	//#ifdef ANDROID
 	bHost.y =	 yBase - 28;
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 	bJoin.y =	 yBase + 4;
 #else
 	bJoin.y =	 yBase;

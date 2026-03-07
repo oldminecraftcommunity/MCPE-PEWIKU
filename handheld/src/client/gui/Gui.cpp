@@ -213,10 +213,10 @@ void Gui::handleKeyPressed(int key)
 			minecraft->player->inventory->selected++;
 		}
 	}
-	else if (key == 100)
-	{
-		minecraft->screenChooser.setScreen(SCREEN_BLOCKSELECTION);
-	}
+	// else if (key == 100)
+	// {
+	// 	minecraft->screenChooser.setScreen(SCREEN_BLOCKSELECTION);
+	// }
 }
 
 void Gui::tick() {

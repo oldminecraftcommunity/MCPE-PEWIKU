@@ -1,10 +1,7 @@
 #include "MouseHandler.h"
 #include "player/input/ITurnInput.h"
 
-#if defined(RPI) || defined(WIN32) || defined(POSIX)
-#include <SDL2/SDL.h>
-extern SDL_Window* nativewindow;
-#endif
+extern void platform_setMouseGrabbed(bool grab);
 
 MouseHandler::MouseHandler( ITurnInput* turnInput )
 :	_turnInput(turnInput)
@@ -24,20 +21,11 @@ void MouseHandler::setTurnInput( ITurnInput* turnInput ) {
 void MouseHandler::grab() {
 	xd = 0;
 	yd = 0;
-
-#if defined(RPI) || defined(WIN32) || defined(POSIX)
-	//LOGI("Grabbing input!\n");
-	SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(0);
-#endif
+	platform_setMouseGrabbed(true);
 }
 
 void MouseHandler::release() {
-#if defined(RPI) || defined(WIN32) || defined(POSIX)
-	//LOGI("Releasing input!\n");
-	SDL_SetRelativeMouseMode(SDL_FALSE);
-	SDL_ShowCursor(1);
-#endif
+	platform_setMouseGrabbed(false);
 }
 
 void MouseHandler::poll() {

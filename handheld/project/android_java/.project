@@ -34,7 +34,18 @@
 		<link>
 			<name>src_linked</name>
 			<type>2</type>
-			<location>C:/dev/subversion/mojang/minecraftcpp/trunk/handheld/project/android/src</location>
+			<location>/home/user/Загрузки/__/_Source/mc-cpp-snapshots/Pewiku/C::/dev/subversion/mojang/minecraftcpp/trunk/handheld/project/android/src</location>
 		</link>
 	</linkedResources>
+	<filteredResources>
+		<filter>
+			<id>1772889314413</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

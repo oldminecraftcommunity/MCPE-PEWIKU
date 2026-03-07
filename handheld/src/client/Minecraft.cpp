@@ -632,7 +632,7 @@ void Minecraft::tickInput() {
 		return;
 	}
 
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 	bool mouseDiggable = true;
 	bool allowGuiClicks = !mouseGrabbed;
 #else
@@ -650,13 +650,13 @@ void Minecraft::tickInput() {
 
 		const MouseAction& e = Mouse::getEvent();
 
-#ifdef RPI // If clicked when not having focus, get focus @keyboard
+	#ifdef PLATFORM_DESKTOP // If clicked when not having focus, get focus @keyboard
 		if (!mouseGrabbed) {
 			if (!screen && e.data == MouseAction::DATA_DOWN) {
 				grabMouse();
 			}
 		}
-#endif
+	#endif
 
 		if (allowGuiClicks && e.action == MouseAction::ACTION_LEFT && e.data == MouseAction::DATA_DOWN) {
 			gui.handleClick(MouseAction::ACTION_LEFT, Mouse::getX(), Mouse::getY());
@@ -691,7 +691,7 @@ void Minecraft::tickInput() {
 		if (isPressed) {
 			gui.handleKeyPressed(key);
 
-			#if defined(WIN32) || defined(RPI)//|| defined(_DEBUG) || defined(DEBUG)
+			#if defined(PLATFORM_DESKTOP) //|| defined(_DEBUG) || defined(DEBUG)
 				if (key >= '0' && key <= '9') {
 					int digit = key - '0';
 					int slot = digit - 1;
@@ -699,7 +699,8 @@ void Minecraft::tickInput() {
 					if (slot >= 0 && slot < gui.getNumSlots()-1)
 						player->inventory->selectSlot(slot);
 
-					#if defined(WIN32)
+					#if defined(WIN32) && defined(DEBUG)
+						// network debugging? (??)
 						if (digit >= 1 && GetAsyncKeyState(VK_CONTROL) < 0) {
 							// Set adventure settings here!
 							AdventureSettingsPacket p(level->adventureSettings);
@@ -715,7 +716,7 @@ void Minecraft::tickInput() {
 					#endif
 				}
 			#endif
-			#if defined(RPI) || defined(WIN32) || defined(POSIX)
+			#if defined(PLATFORM_DESKTOP)
 				if (key == Keyboard::KEY_E) {
 					screenChooser.setScreen(SCREEN_BLOCKSELECTION);
 				}
@@ -831,13 +832,8 @@ void Minecraft::tickInput() {
 				}
 			#endif
 
-			#ifndef RPI
-				if (key == 82)
+			if (key == Keyboard::KEY_ESCAPE)
 					pauseGame(false);
-			#else
-				if (key == Keyboard::KEY_ESCAPE)
-					pauseGame(false);
-			#endif
 
 			#ifndef OPENGL_ES
 				if (key == Keyboard::KEY_P) {
@@ -892,7 +888,7 @@ void Minecraft::tickInput() {
 		||	(buildHandled && bai.isRemove());
 
 	TIMER_POP_PUSH("handlemouse");
-#if defined(RPI) || defined(WIN32) || defined(POSIX)
+#if defined(PLATFORM_DESKTOP)
 	handleMouseDown(MouseAction::ACTION_LEFT, isTryingToDestroyBlock);
 	handleMouseClick(buildHandled && bai.isInteract()
 		|| options.useMouseForDigging && Mouse::isButtonDown(MouseAction::ACTION_RIGHT));
@@ -916,7 +912,8 @@ void Minecraft::tickInput() {
 
 void Minecraft::handleMouseDown(int button, bool down) {
 #ifndef STANDALONE_SERVER
-#ifndef RPI
+#ifndef PLATFORM_DESKTOP
+	//(??)
 	if(player->isUsingItem()) {
 		if(!down && !Keyboard::isKeyDown(options.keyUse.key)) {
 			gameMode->releaseUsingItem(player);
@@ -1003,8 +1000,9 @@ void Minecraft::handleBuildAction(BuildActionIntention* action) {
  			if (gameMode->useItemOn(player, level, item, x, y, z, face, hitResult.pos)) {
 			    mayUse = false;
 			    player->swing();
-			#ifdef RPI
+			#ifdef PLATFORM_DESKTOP
 				} else if (item && item->id == ((Item*)Item::sword_iron)->id) {
+					LOGI("player swing (??) Minecraft:1008\n");
 					player->swing();
 			#endif
 			}
@@ -1123,7 +1121,7 @@ void Minecraft::releaseMouse()
 }
 
 bool Minecraft::useTouchscreen() {
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 	return false;
 #endif
 	return options.useTouchScreen || !_supportsNonTouchscreen;
@@ -1243,15 +1241,7 @@ void Minecraft::_reloadInput() {
 	delete inputHolder;
 
 	if (useTouchscreen()) {
-		#if defined(WIN32) || defined(POSIX)
-			inputHolder = new CustomInputHolder(
-				new KeyboardInput(&options),
-				new MouseTurnInput(MouseTurnInput::MODE_DELTA, width/2, height/2),
-				new MouseBuildInput()
-			);
-		#else
-			inputHolder = new TouchInputHolder(this, &options);
-		#endif
+		inputHolder = new TouchInputHolder(this, &options);
 	} else {
 		#if defined(ANDROID) || defined(__APPLE__) 
 			inputHolder = new CustomInputHolder(
@@ -1377,7 +1367,7 @@ void Minecraft::_levelGenerated()
 		netCallback->levelGenerated(level);
 	}
 
-#if defined(WIN32) || defined(RPI)
+#if defined(PLATFORM_DESKTOP)
 	if (_commandServer) {
 		delete _commandServer;
 	}

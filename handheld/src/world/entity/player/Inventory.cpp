@@ -112,7 +112,7 @@ void Inventory::setupDefault() {
 		addItem(new ItemInstance((Tile*)Tile::leaves, 1, 2));
 		addItem(new ItemInstance(Tile::stoneSlabHalf));
 	} else {
-#if defined(WIN32)
+#if defined(PLATFORM_DESKTOP)
 		// Survival
 		addItem(new ItemInstance((Item*)Item::shears));
 		addItem(new ItemInstance(Tile::redBrick));
@@ -130,7 +130,8 @@ void Inventory::setupDefault() {
 		Sel[5] =  addItem(new ItemInstance(Tile::wood));
 		Sel[2] = addItem(new ItemInstance(Tile::redBrick));
 
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
+		//(??)
 		Sel[3] = addItem(new ItemInstance(Tile::rock));
 #else
 		Sel[0] = addItem(new ItemInstance(Tile::rock));
@@ -206,7 +207,8 @@ void Inventory::setupDefault() {
 		addItem(new ItemInstance(Tile::cloth, 1, 9));
 		addItem(new ItemInstance(Tile::cloth, 1, 8));
 		addItem(new ItemInstance(Tile::ladder));
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
+		//(??)
 		addItem(new ItemInstance(Tile::torch));
 #else
 		Sel[3] = addItem(new ItemInstance(Tile::torch));
@@ -245,7 +247,8 @@ void Inventory::setupDefault() {
 		addItem(new ItemInstance(Item::seeds_melon));
 		addItem(new ItemInstance(Item::dye_powder, 1, DyePowderItem::WHITE));
 		addItem(new ItemInstance(Item::hoe_iron));
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
+		//(??)
 		Sel[0] = addItem(new ItemInstance(Item::sword_iron));
 #else
 		addItem(new ItemInstance(Item::sword_iron));
@@ -253,8 +256,8 @@ void Inventory::setupDefault() {
 		addItem(new ItemInstance(Item::bow));
 		addItem(new ItemInstance(Item::sign));
 	} else {
-#if defined(WIN32)
 		// Survival
+#if defined(DEBUG)
 		addItem(new ItemInstance(Item::ironIngot, 64));
 		addItem(new ItemInstance(Item::ironIngot, 34));
 		addItem(new ItemInstance(Tile::stonecutterBench));

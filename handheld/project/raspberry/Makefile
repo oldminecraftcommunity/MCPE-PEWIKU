@@ -254,7 +254,7 @@ SHELL:=/bin/bash
 #
 # Setup default vars and paths
 #
-CFLAGS:=-mfloat-abi=hard -march=armv6j -mfpu=vfp -DRPI -DPOSIX -DGFX_SMALLER_CHUNKS -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
+CFLAGS:=-mfloat-abi=hard -march=armv6j -mfpu=vfp -DRPI -DPLATFORM_DESKTOP -DGFX_SMALLER_CHUNKS -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
 
 OBJECTS:=$(SOURCES:%.cpp=%.o)
 DEPS:=$(SOURCES:%.cpp=%.d)

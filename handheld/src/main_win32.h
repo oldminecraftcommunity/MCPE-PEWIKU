@@ -211,6 +211,22 @@ void inputNetworkThread(void* userdata)
 	}
 }
 
+// calls from MouseHandler
+void platform_setMouseGrabbed(bool grab) {
+    if (!g_hwnd) return;
+    if (grab) {
+        ShowCursor(FALSE);
+        RECT rect;
+        GetClientRect(g_hwnd, &rect);
+        ClientToScreen(g_hwnd, (LPPOINT)&rect.left);
+        ClientToScreen(g_hwnd, (LPPOINT)&rect.right);
+        ClipCursor(&rect);
+    } else {
+        ShowCursor(TRUE);
+        ClipCursor(NULL);
+    }
+}
+
 int main(void) {
 	AppContext appContext;
 	MSG sMessage;
@@ -276,6 +292,7 @@ int main(void) {
 	g_app->setSize(appContext.platform->getScreenWidth(), appContext.platform->getScreenHeight());
 
 	//_beginthread(inputNetworkThread, 0, 0);
+	static HWND g_hwnd = NULL; 
 	
 	// Main event loop
 	while(g_running && !app->wantToQuit())

@@ -212,7 +212,7 @@ void GameRenderer::render(float a) {
 			glDisable2(GL_SCISSOR_TEST);
 
 		mc->screen->render(xMouse, yMouse, a);
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 		renderCursor(xMouse, yMouse, mc);
 #endif
 		// Screen might have been removed, so check it again
@@ -653,14 +653,9 @@ void GameRenderer::pick(float a) {
     float range = mc->gameMode->getPickRange();
     bool isPicking = true;
 
-    bool freeform = mc->useTouchscreen()  && !mc->options.isJoyTouchArea;
+    bool freeform = mc->useTouchscreen() && !mc->options.isJoyTouchArea;
     if (freeform) {
-        #if defined(WIN32) || defined(POSIX)
-            isPicking = updateFreeformPickDirection(a, pickDirection);
-        #else
-            mc->hitResult = mc->cameraTargetPlayer->pick(range, a);
-            pickDirection = mc->cameraTargetPlayer->getViewVector(a);
-        #endif
+        isPicking = updateFreeformPickDirection(a, pickDirection);
     } else {
         mc->hitResult = mc->cameraTargetPlayer->pick(range, a);
         pickDirection = mc->cameraTargetPlayer->getViewVector(a);

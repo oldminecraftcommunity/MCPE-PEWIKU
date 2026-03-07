@@ -138,8 +138,9 @@ void ClientSideNetworkHandler::handle(const RakNet::RakNetGUID& source, StartGam
 {
 	LOGI("StartGamePacket\n");
 
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 	if (packet->gameType != GameType::Creative) {
+		//(??)
 		minecraft->setScreen(new DisconnectionScreen("Could not connect: Incompatible server!"));
 		return;
 	}

@@ -144,7 +144,7 @@ void JoinGameScreen::render( int xm, int ym, float a )
 	Screen::render(xm, ym, a);
 
 	if (hasNetwork) {
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 		std::string s = "Scanning for Local Network Games...";
 #else
 		std::string s = "Scanning for WiFi Games...";

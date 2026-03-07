@@ -1,7 +1,7 @@
 #include "NinecraftApp.h"
 //#include <EGL/egl.h>
 
-#ifdef RPI
+#ifdef PLATFORM_DESKTOP
 //#define NO_STORAGE
 #endif
 
@@ -118,24 +118,22 @@ void NinecraftApp::init()
 
 void NinecraftApp::teardown()
 {
-	// Note: Don't tear down statics if we run on Android
-	// (we might change this in the future)
-#ifndef ANDROID
 	Biome::teardownBiomes();
 	Item ::teardownItems();
 	Tile ::teardownTiles();
 	Material::teardownMaterials();
 	Recipes ::teardownRecipes();
 	TileEntity::teardownTileEntities();
-#endif
-#ifdef WIN32
+	// Note: Don't tear down statics if we run on Android
+	// (we might change this in the future)
+#ifdef DEBUG
 	ItemRenderer::teardown_static();
+#endif
 	if (EntityTileRenderer::instance != NULL) {
 		delete EntityTileRenderer::instance;
 		EntityTileRenderer::instance = NULL;
 	}
 	TileEntityRenderDispatcher::destroy();
-#endif
 }
 
 void NinecraftApp::update()
@@ -160,7 +158,7 @@ void NinecraftApp::update()
         restartServer();
     }
 
-#ifndef WIN32
+#ifndef WIN32 // maybe it's to avoid cluttering VS console
 	updateStats();
 #endif
 }

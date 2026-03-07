@@ -22,7 +22,7 @@
 #include "NinecraftApp.h"
 #define MAIN_CLASS NinecraftApp
 
-#ifdef _WIN32
+#ifdef WIN32
 	#include "main_win32.h"
 #endif
 #ifdef ANDROID
@@ -37,7 +37,7 @@
     #include "main_rpi.h"
 #endif
 
-#ifdef LINUX
+#ifdef __linux__
     #include "main_unix.h"
 #endif
 
