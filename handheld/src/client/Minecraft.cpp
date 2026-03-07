@@ -658,8 +658,18 @@ void Minecraft::tickInput() {
 		}
 	#endif
 
-		if (allowGuiClicks && e.action == MouseAction::ACTION_LEFT && e.data == MouseAction::DATA_DOWN) {
-			gui.handleClick(MouseAction::ACTION_LEFT, Mouse::getX(), Mouse::getY());
+		if (e.action == MouseAction::ACTION_LEFT && e.data == MouseAction::DATA_DOWN) {
+			if (allowGuiClicks && gui.isInside(Mouse::getX(), Mouse::getY())) {
+				gui.handleClick(MouseAction::ACTION_LEFT, Mouse::getX(), Mouse::getY());
+			} else if (!screen && mouseDiggable) {
+				handleMouseClick(MouseAction::ACTION_LEFT);
+			}
+		}
+		
+		if (e.action == MouseAction::ACTION_RIGHT && e.data == MouseAction::DATA_DOWN) {
+			if (!screen && mouseDiggable) {
+				handleMouseClick(MouseAction::ACTION_RIGHT);
+			}
 		}
 
 		if (e.action == MouseAction::ACTION_WHEEL) {
@@ -890,8 +900,8 @@ void Minecraft::tickInput() {
 	TIMER_POP_PUSH("handlemouse");
 #if defined(PLATFORM_DESKTOP)
 	handleMouseDown(MouseAction::ACTION_LEFT, isTryingToDestroyBlock);
-	handleMouseClick(buildHandled && bai.isInteract()
-		|| options.useMouseForDigging && Mouse::isButtonDown(MouseAction::ACTION_RIGHT));
+	// handleMouseClick(buildHandled && bai.isInteract()
+	// 	|| options.useMouseForDigging && Mouse::isButtonDown(MouseAction::ACTION_RIGHT));
 #else
 	handleMouseDown(MouseAction::ACTION_LEFT, isTryingToDestroyBlock || (buildHandled && bai.isInteract()));
 #endif
@@ -939,12 +949,15 @@ void Minecraft::handleMouseDown(int button, bool down) {
 }
 
 void Minecraft::handleMouseClick(int button) {
-//	BuildActionIntention bai(
-//		(button == MouseAction::ACTION_LEFT)?
-//			BuildActionIntention::BAI_REMOVE
-//		:	BuildActionIntention::BAI_BUILD);
-//
-//	handleBuildAction(&bai);
+	BuildActionIntention bai;
+	
+	if (button == MouseAction::ACTION_LEFT) {
+		bai = BuildActionIntention(BuildActionIntention::BAI_REMOVE | BuildActionIntention::BAI_ATTACK);
+	} else if (button == MouseAction::ACTION_RIGHT) {
+		bai = BuildActionIntention(BuildActionIntention::BAI_BUILD | BuildActionIntention::BAI_INTERACT);
+	}
+	
+	handleBuildAction(&bai);
 }
 
 void Minecraft::handleBuildAction(BuildActionIntention* action) {

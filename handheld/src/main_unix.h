@@ -129,7 +129,6 @@ void platform_setMouseGrabbed(bool grab) {
         g_lastX = wa.width / 2;
         g_lastY = wa.height / 2;
         XWarpPointer(g_dpy, None, g_win, 0, 0, 0, 0, g_lastX, g_lastY);
-        XSync(g_dpy, False);
         
     } else {
         // restore cursor
@@ -141,11 +140,12 @@ void platform_setMouseGrabbed(bool grab) {
         XWarpPointer(g_dpy, None, g_win, 0, 0, 0, 0, g_preGrabX, g_preGrabY);
         g_lastX = g_preGrabX;
         g_lastY = g_preGrabY;
-        XSync(g_dpy, False);
 
         Mouse::feed(0, 0, g_preGrabX, g_preGrabY, 0, 0);
         Multitouch::feed(0, 0, g_preGrabX, g_preGrabY, 0);
     }
+
+	XSync(g_dpy, False);
 }
 
 // key translator X11, wasd -> WASD (˶ᵔ ᵕ ᵔ˶)

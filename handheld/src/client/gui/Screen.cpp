@@ -71,9 +71,40 @@ void Screen::updateEvents()
 
 void Screen::mouseEvent()
 {
+	// coords -> gui scale
 	const MouseAction& e = Mouse::getEvent();
+	int xm = e.x * width / minecraft->width;
+	int ym = e.y * height / minecraft->height - 1;
+
+	// update buttons when hovered
+	if (e.action == MouseAction::ACTION_MOVE) {
+		// for (unsigned int i = 0; i < tabButtons.size(); ++i) {
+		// 	Button* button = tabButtons[i];
+			
+		// 	if (button->clicked(minecraft, xm, ym)) {
+		// 		tabButtonIndex = i;
+		// 		updateTabButtonSelection();
+		// 		break;
+		// 	}
+		// }
+
+		for (unsigned int i = 0; i < buttons.size(); ++i) {
+			Button* button = buttons[i];
+			// if hovered
+			button->selected = button->clicked(minecraft, xm, ym);
+		}
+		return;
+	}
+
 	if (!e.isButton())
 		return;
+	
+	// handle clicking
+	if (Mouse::getEventButtonState()) {
+		mouseClicked(xm, ym, Mouse::getEventButton());
+	} else {
+		mouseReleased(xm, ym, Mouse::getEventButton());
+	}
 
 	if (Mouse::getEventButtonState()) {
 		int xm = e.x * width / minecraft->width;
