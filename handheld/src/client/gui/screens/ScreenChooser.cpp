@@ -32,12 +32,12 @@ Screen* ScreenChooser::createScreen( ScreenId id )
 		}
 	} else {
 		switch (id) {
-		case SCREEN_STARTMENU:	screen = new Touch::StartMenuScreen();	break;
-		case SCREEN_SELECTWORLD:screen = new Touch::SelectWorldScreen();break;
-		case SCREEN_JOINGAME:	screen = new Touch::JoinGameScreen();	break;
+		case SCREEN_STARTMENU:	screen = new StartMenuScreen();  break;
+		case SCREEN_SELECTWORLD:screen = new SelectWorldScreen();break;
+		case SCREEN_JOINGAME:	screen = new JoinGameScreen();   break;
 		case SCREEN_PAUSE:	    screen = new PauseScreen(false); break;
 		case SCREEN_PAUSEPREV:	screen = new PauseScreen(true);	 break;
-		case SCREEN_BLOCKSELECTION:	screen = new Touch::IngameBlockSelectionScreen();	break;
+		case SCREEN_BLOCKSELECTION:	screen = new IngameBlockSelectionScreen();	break;
 
 		case SCREEN_NONE:
 		default:
