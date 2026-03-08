@@ -198,6 +198,15 @@ void ArmorScreen::render(int xm, int ym, float a) {
 	glDisable2(GL_ALPHA_TEST);
 }
 
+void ArmorScreen::keyPressed( int eventKey )
+{
+	if (eventKey == Keyboard::KEY_ESCAPE || eventKey == Keyboard::KEY_E) {
+		minecraft->setScreen(NULL);
+	} else {
+		super::keyPressed(eventKey);
+	}
+}
+
 void ArmorScreen::buttonClicked(Button* button) {
 	if (button == &btnClose) {
 		minecraft->setScreen(NULL);

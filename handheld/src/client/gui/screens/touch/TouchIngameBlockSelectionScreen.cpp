@@ -226,6 +226,15 @@ void IngameBlockSelectionScreen::renderDemoOverlay() {
 #endif /*DEMO_MODE*/
 }
 
+void IngameBlockSelectionScreen::keyPressed( int eventKey )
+{
+	if (eventKey == Keyboard::KEY_ESCAPE || eventKey == Keyboard::KEY_E) {
+		minecraft->setScreen(NULL);
+	} else {
+		super::keyPressed(eventKey);
+	}
+}
+
 void IngameBlockSelectionScreen::buttonClicked(Button* button) {
 	if (button->id == bDone.id)
 		minecraft->setScreen(NULL);

@@ -29,6 +29,7 @@ public:
 	void tick();
 	void render(int xm, int ym, float a);
 	bool renderGameBehind();
+	void keyPressed( int eventKey );
 	void buttonClicked(Button* button);
 
 	// IInventoryPaneCallback

@@ -165,7 +165,7 @@ static unsigned char transformKey(KeySym keysym) {
         case XK_BackSpace: return 8;
         case XK_Tab: return 9;
 		case XK_Shift_L:
-        case XK_Shift_R: return Keyboard::KEY_LSHIFT; // вместо "16"
+        case XK_Shift_R: return Keyboard::KEY_LSHIFT; // instead "16" >...
         case XK_Control_L:
         case XK_Control_R: return Keyboard::KEY_LCTRL;
         case XK_Up: return 38;

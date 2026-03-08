@@ -35,6 +35,7 @@ public:
 	bool isAllowed(int slot);
 	std::vector<const ItemInstance*> getItems(const InventoryPane* forPane);
 
+	void keyPressed( int eventKey );
 	void buttonClicked(Button* button);
 protected:
 	virtual void mouseClicked(int x, int y, int buttonNum);

@@ -185,11 +185,13 @@ void Gui::handleClick(int button, int x, int y) {
 	int slot = getSlotIdAt(x, y);
 	if (slot != -1)
 	{
+	#ifndef PLATFORM_DESKTOP
 		if (slot == (getNumSlots()-1))
 		{
 			minecraft->screenChooser.setScreen(SCREEN_BLOCKSELECTION);
 		}
 		else
+	#endif
 		{
 			minecraft->player->inventory->selectSlot(slot);
 			itemNameOverlayTime = 0;
@@ -212,6 +214,10 @@ void Gui::handleKeyPressed(int key)
 		{
 			minecraft->player->inventory->selected++;
 		}
+	}
+	else if (key == minecraft->options.keyDrop.key) 
+	{
+		minecraft->player->inventory->dropSlot(minecraft->player->inventory->selected, false);
 	}
 	// else if (key == 100)
 	// {
@@ -450,9 +456,13 @@ void Gui::tickItemDrop()
 	// Handle item drop
 	static bool isCurrentlyActive = false;
 	isCurrentlyActive = false;
+	int slots = getNumSlots();
+#ifndef PLATFORM_DESKTOP
+	slots--;
+#endif
 	if (Mouse::isButtonDown(MouseAction::ACTION_LEFT)) {
 		int slot = getSlotIdAt(Mouse::getX(), Mouse::getY());
-		if (slot >= 0 && slot < getNumSlots()-1) {
+		if (slot >= 0 && slot < slots) {
 			if (slot != _currentDropSlot) {
 				_currentDropTicks = 0;
 				_currentDropSlot = slot;
@@ -754,7 +764,12 @@ void Gui::renderToolBar( float a, int ySlot, const int screenWidth ) {
 	t.beginOverride();
 
 	float x = baseItemX;
-	for (int i = 0; i < getNumSlots()-1; i++) {
+	int slots = getNumSlots();
+	// TODO: if using touchscreen
+#ifndef PLATFORM_DESKTOP
+	slots--;
+#endif
+	for (int i = 0; i < slots; i++) {
 		renderSlot(i, (int)x, ySlot, a);
 		x += 20;
 	}
@@ -766,8 +781,10 @@ void Gui::renderToolBar( float a, int ySlot, const int screenWidth ) {
 	//renderSlotWatch.stop();
 	//renderSlotWatch.printEvery(100, "Render slots:");
 
-	//int x = screenWidth / 2 + getNumSlots() * 10 + (getNumSlots()-1) * 20 + 2;
-	blit(screenWidth / 2 + 10 * getNumSlots() - 20 + 4, ySlot + 6, 242, 252, 14, 4, 14, 4);
+	//int x = screenWidth / 2 + slots * 10 + (slots) * 20 + 2;
+#ifndef PLATFORM_DESKTOP
+	blit(screenWidth / 2 + 10 * slots - 20 + 4, ySlot + 6, 242, 252, 14, 4, 14, 4);
+#endif
 
 	minecraft->textures->loadAndBindTexture("gui/gui_blocks.png");
 	t.endOverrideAndDraw();
@@ -777,7 +794,7 @@ void Gui::renderToolBar( float a, int ySlot, const int screenWidth ) {
 	glDisable2(GL_TEXTURE_2D);
 	t.beginOverride();
 	x = baseItemX;
-	for (int i = 0; i < getNumSlots()-1; i++) {
+	for (int i = 0; i < slots; i++) {
 		ItemRenderer::renderGuiItemDecorations(minecraft->player->inventory->getItem(i), x, (float)ySlot);
 		x += 20;
 	}
@@ -797,7 +814,7 @@ void Gui::renderToolBar( float a, int ySlot, const int screenWidth ) {
 	t.beginOverride();
 	if (minecraft->gameMode->isSurvivalType()) {
 		x = baseItemX;
-		for (int i = 0; i < getNumSlots()-1; i++) {
+		for (int i = 0; i < slots; i++) {
 			ItemInstance* item = minecraft->player->inventory->getItem(i);
 			if (item && item->count >= 0)
 				renderSlotText(item, k*x, k*ySlot + 1, true, true);
