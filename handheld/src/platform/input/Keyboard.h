@@ -77,6 +77,9 @@ public:
 	static const int KEY_LSHIFT = 10;
 
 	static bool isKeyDown(int keyCode) {
+		if (keyCode < 0 || keyCode >= 256) {
+			return false;
+		}
 		return _states[keyCode] == KeyboardAction::KEYDOWN;
 	}
 
