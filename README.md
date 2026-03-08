@@ -1,29 +1,33 @@
 # Pewiku
 **Whats it?**  
 Implementation of a block-based game inspired by Minecraft.  
-Right now this project corresponds to Minecraft Pocket Edition v0_6_2  
+Right now this project corresponds to Minecraft Pocket Edition v0.6.2  
 
 **Goals:**  
 - Full compliance with MCPE 0.7 & 0.8  
 - Saving MCPE experience from gameplay  
 
 **Tasks is right now:**  
-- Options Screen
+- Options Screen  
 - Fix bugs  
-- Polish Android building
+- Polish Android building  
 
-**Features:**
-- Bulding on linux / windows
-- PC controls
-- It works
+**Features:**  
+- Bulding on linux / windows (new)  
+- PC controls (new)  
+- Basic blocks  
+- World generation like MC beta  
+- Crafting system  
+- Creative/Survival game modes  
+- Multiplayer & Server core includes  
 
 
 # Assets
-You should take the assets from the original MCPE or use your custom assets.  
+You should take the assets from the original MCPE or use your custom assets.   
 
 
 # Building
-You *can* to go to the `handheld`/`project` folder and select a platform, but it's better to build from the project root.
+You *can* to go to the `handheld`/`project` folder and select a platform, but it's better to build from the project root.  
 
 ### Build all
 useful for dev  
