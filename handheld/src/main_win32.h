@@ -28,24 +28,25 @@ static HWND g_hwnd = NULL;
 static bool g_mouseGrabbed = false;
 static int g_centerX = 0;
 static int g_centerY = 0;
+static volatile bool g_skipMouseMove = false;
 
 void platform_setMouseGrabbed(bool grab);
 
 static int getBits(int bits, int startBitInclusive, int endBitExclusive, int shiftTruncate) {
 	int sum = 0;
-	for (int i = startBitInclusive; i<endBitExclusive; ++i)
-		sum += (bits & (2<<i));
-	return shiftTruncate? (sum >> startBitInclusive) : sum;
+	for (int i = startBitInclusive; i < endBitExclusive; ++i)
+		sum += (bits & (2 << i));
+	return shiftTruncate ? (sum >> startBitInclusive) : sum;
 }
 
 void resizeWindow(HWND hWnd, int nWidth, int nHeight) {
-   RECT rcClient, rcWindow;
-   POINT ptDiff;
-     GetClientRect(hWnd, &rcClient);
-     GetWindowRect(hWnd, &rcWindow);
-   ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
-   ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
-   MoveWindow(hWnd,rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
+	RECT rcClient, rcWindow;
+	POINT ptDiff;
+	GetClientRect(hWnd, &rcClient);
+	GetWindowRect(hWnd, &rcWindow);
+	ptDiff.x = (rcWindow.right - rcWindow.left) - rcClient.right;
+	ptDiff.y = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
+	MoveWindow(hWnd, rcWindow.left, rcWindow.top, nWidth + ptDiff.x, nHeight + ptDiff.y, TRUE);
 }
 
 void toggleResolutions(HWND hwnd, int direction) {
@@ -60,24 +61,24 @@ void toggleResolutions(HWND hwnd, int direction) {
 	};
 	static int count = sizeof(sizes) / sizeof(sizes[0]);
 	n = (count + n + direction) % count;
-	
+
 	int* size = sizes[n];
 	int k = size[2];
-	
+
 	resizeWindow(hwnd, k * size[0], k * size[1]);
 }
 
-LRESULT WINAPI windowProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
+LRESULT WINAPI windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	LRESULT retval = 1;
-	
+
 	switch (uMsg)
 	{
 	case WM_KEYDOWN: {
 		if (wParam == 33) toggleResolutions(hWnd, -1);
 		if (wParam == 34) toggleResolutions(hWnd, +1);
-		
+
 		//if (wParam == 'Q') ((Minecraft*)g_app)->leaveGame();
-		Keyboard::feed((unsigned char) wParam, 1); //(unsigned char) getBits(lParam, 16, 23, 1)
+		Keyboard::feed((unsigned char)wParam, 1); //(unsigned char) getBits(lParam, 16, 23, 1)
 
 		//char* lParamConv = (char*) &lParam;
 		//int convertResult =  ToUnicode(wParam, lParamConv[1], )
@@ -85,31 +86,31 @@ LRESULT WINAPI windowProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 		return 0;
 	}
 	case WM_KEYUP: {
-		Keyboard::feed((unsigned char) wParam, 0); //(unsigned char) getBits(lParam, 16, 23, 1)
+		Keyboard::feed((unsigned char)wParam, 0); //(unsigned char) getBits(lParam, 16, 23, 1)
 		return 0;
 	}
 	case WM_CHAR: {
 		//LOGW("WM_CHAR: %d\n", wParam);
-		if(wParam >= 32)
+		if (wParam >= 32)
 			Keyboard::feedText(wParam);
 		return 0;
 	}
 	case WM_LBUTTONDOWN: {
-		Mouse::feed( MouseAction::ACTION_LEFT, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		Mouse::feed(MouseAction::ACTION_LEFT, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		Multitouch::feed(1, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), 0);
 		break;
 	}
 	case WM_LBUTTONUP: {
-		Mouse::feed( MouseAction::ACTION_LEFT, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		Mouse::feed(MouseAction::ACTION_LEFT, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		Multitouch::feed(1, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), 0);
 		break;
 	}
 	case WM_RBUTTONDOWN: {
-		Mouse::feed( MouseAction::ACTION_RIGHT, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		Mouse::feed(MouseAction::ACTION_RIGHT, 1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	}
 	case WM_RBUTTONUP: {
-		Mouse::feed( MouseAction::ACTION_RIGHT, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		Mouse::feed(MouseAction::ACTION_RIGHT, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 	}
 	case WM_ACTIVATE:
@@ -135,14 +136,24 @@ LRESULT WINAPI windowProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 			int centerX = (rect.right - rect.left) / 2;
 			int centerY = (rect.bottom - rect.top) / 2;
 
+			if (g_skipMouseMove) {
+				if ((x >= g_centerX - 1 && x <= g_centerX + 1) && (y >= g_centerY - 1 && y <= g_centerY + 1)) {
+					g_skipMouseMove = false;
+					return 0;
+				}
+			}
+
 			if (x != centerX || y != centerY) {
+				if (dx > 200) dx = 200; else if (dx < -200) dx = -200;
+				if (dy > 200) dy = 200; else if (dy < -200) dy = -200;
+
 				Mouse::feed(MouseAction::ACTION_MOVE, 0, x, y, dx, dy);
 				Multitouch::feed(MouseAction::ACTION_MOVE, 0, x, y, 0);
 
-				// center cursor
 				POINT pt = { g_centerX, g_centerY };
 				ClientToScreen(hWnd, &pt);
 				SetCursorPos(pt.x, pt.y);
+				g_skipMouseMove = true;
 			}
 		}
 		else {
@@ -156,16 +167,16 @@ LRESULT WINAPI windowProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 		if (uMsg == WM_NCDESTROY) g_running = false;
 		else {
 			if (uMsg == WM_SIZE) {
-				if (g_app) g_app->setSize( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) );
+				if (g_app) g_app->setSize(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 			}
 		}
-		retval = DefWindowProc (hWnd, uMsg, wParam, lParam);
+		retval = DefWindowProc(hWnd, uMsg, wParam, lParam);
 		break;
 	}
 	return retval;
 }
 
-void platform(HWND *result, int width, int height) {
+void platform(HWND* result, int width, int height) {
 	WNDCLASS wc;
 	RECT wRect;
 	HWND hwnd;
@@ -193,14 +204,14 @@ void platform(HWND *result, int width, int height) {
 
 	AdjustWindowRectEx(&wRect, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE);
 
-	hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_WINDOWEDGE, "OGLES", "main", WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, wRect.right-wRect.left, wRect.bottom-wRect.top, NULL, NULL, hInstance, NULL);
+	hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_WINDOWEDGE, "OGLES", "main", WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, wRect.right - wRect.left, wRect.bottom - wRect.top, NULL, NULL, hInstance, NULL);
 	*result = hwnd;
 }
 
 /** Thread that reads input data via UDP network datagrams
-    and fills Mouse and Keyboard structures accordingly.
+	and fills Mouse and Keyboard structures accordingly.
 	@note: The bound local net address is unfortunately
-	       hard coded right now (to prevent wrong Interface) */
+		   hard coded right now (to prevent wrong Interface) */
 void inputNetworkThread(void* userdata)
 {
 	// set up an UDP socket for listening
@@ -215,7 +226,7 @@ void inputNetworkThread(void* userdata)
 		printf("Couldn't create socket\n");
 		return;
 	}
-	
+
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(9991);
@@ -225,7 +236,7 @@ void inputNetworkThread(void* userdata)
 		printf("Couldn't bind socket to port 9991\n");
 		return;
 	}
-	
+
 	sockaddr fromAddr;
 	int fromAddrLen = sizeof(fromAddr);
 
@@ -243,7 +254,7 @@ void inputNetworkThread(void* userdata)
 		}
 		// Keyboard
 		if (read == 2) {
-			Keyboard::feed((unsigned char) buf[0], (int)buf[1]);
+			Keyboard::feed((unsigned char)buf[0], (int)buf[1]);
 		}
 		// Mouse
 		else if (read == 16) {
@@ -262,14 +273,15 @@ void platform_setMouseGrabbed(bool grab) {
 		GetClientRect(g_hwnd, &rect);
 
 		g_centerX = (rect.right - rect.left) / 2;
-        g_centerY = (rect.bottom - rect.top) / 2;
+		g_centerY = (rect.bottom - rect.top) / 2;
 
-        MapWindowPoints(g_hwnd, NULL, (LPPOINT)&rect, 2);
-        ClipCursor(&rect);
+		MapWindowPoints(g_hwnd, NULL, (LPPOINT)&rect, 2);
+		ClipCursor(&rect);
 
-        POINT pt = { g_centerX, g_centerY };
-        ClientToScreen(g_hwnd, &pt);
-        SetCursorPos(pt.x, pt.y);
+		POINT pt = { g_centerX, g_centerY };
+		ClientToScreen(g_hwnd, &pt);
+		SetCursorPos(pt.x, pt.y);
+		g_skipMouseMove = true;
 	}
 	else {
 		while (ShowCursor(TRUE) < 0);
@@ -331,7 +343,7 @@ int main(void) {
 	}
 
 	eglMakeCurrent(appContext.display, appContext.surface, appContext.surface, appContext.context);
-	
+
 	glInit();
 
 #endif
@@ -344,13 +356,13 @@ int main(void) {
 	g_app->setSize(appContext.platform->getScreenWidth(), appContext.platform->getScreenHeight());
 
 	//_beginthread(inputNetworkThread, 0, 0);
-	
+
 	// Main event loop
-	while(g_running && !app->wantToQuit())
+	while (g_running && !app->wantToQuit())
 	{
 		// Do Windows stuff:
-		while (PeekMessage (&sMessage, NULL, 0, 0, PM_REMOVE) > 0) {
-			if(sMessage.message == WM_QUIT) {
+		while (PeekMessage(&sMessage, NULL, 0, 0, PM_REMOVE) > 0) {
+			if (sMessage.message == WM_QUIT) {
 				g_running = false;
 				break;
 			}
@@ -360,7 +372,7 @@ int main(void) {
 			}
 		}
 		app->update();
-		
+
 		//Sleep(30);
 	}
 
@@ -372,7 +384,7 @@ int main(void) {
 	delete appContext.platform;
 	Sleep(50);
 	//printf("_crtDumpMemoryLeaks: %d\n", _CrtDumpMemoryLeaks());
-	
+
 #ifndef STANDALONE_SERVER
 	// Exit.
 	eglMakeCurrent(appContext.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
