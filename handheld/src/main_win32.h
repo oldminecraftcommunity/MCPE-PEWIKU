@@ -24,6 +24,7 @@
 
 static App* g_app = 0;
 static volatile bool g_running = true;
+static HWND g_hwnd = NULL;
 
 static int getBits(int bits, int startBitInclusive, int endBitExclusive, int shiftTruncate) {
 	int sum = 0;
@@ -292,7 +293,6 @@ int main(void) {
 	g_app->setSize(appContext.platform->getScreenWidth(), appContext.platform->getScreenHeight());
 
 	//_beginthread(inputNetworkThread, 0, 0);
-	static HWND g_hwnd = NULL; 
 	
 	// Main event loop
 	while(g_running && !app->wantToQuit())

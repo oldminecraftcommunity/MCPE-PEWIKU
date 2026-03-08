@@ -89,10 +89,16 @@ void MouseDevice::rewind() {
 }
 
 bool MouseDevice::getEventButtonState() {
+	if (_index < 0 || _index >= (int)_inputs.size()) {
+		return false;
+	}
 	return _inputs[_index].data == MouseAction::DATA_DOWN;
 }
 
 char MouseDevice::getEventButton() {
+	if (_index < 0 || _index >= (int)_inputs.size()) {
+		return false;
+	}
 	return _inputs[_index].action;
 }
 
