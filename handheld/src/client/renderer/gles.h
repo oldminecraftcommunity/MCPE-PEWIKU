@@ -6,7 +6,7 @@
 
 // Android should always run OPENGL_ES
 #if defined(ANDROID) || defined(__APPLE__) || defined(RPI)
-    #define OPENGL_ES
+	#define OPENGL_ES
 #endif
 
 // Other systems might run it, if they #define OPENGL_ES
@@ -25,8 +25,9 @@
 #else
     // Uglyness to fix redeclaration issues
     #ifdef WIN32
-	   #include <WinSock2.h>
-	   #include <Windows.h>
+		#include <WinSock2.h>
+		#include <Windows.h>
+		#define USE_VBO
 	#endif
 	#include <GL/glew.h>
 	#include <GL/gl.h>
@@ -41,7 +42,7 @@
 //#define GLERR(x) if((x) != 0) { LOGI("GLError: " #x "(%d)\n", __LINE__) }
 #define GLERR(x) do { const int errCode = glGetError(); if (errCode != 0) LOGE("OpenGL ERROR @%d: #%d @ (%s : %d)\n", x, errCode, __FILE__, __LINE__); } while (0)
 #else
-#define GLERR(x) x
+#define GLERR(x) (void)0
 #endif
 
 void anGenBuffers(GLsizei n, GLuint* buffer);
@@ -134,9 +135,9 @@ int glhUnProjectf(	float winx, float winy, float winz,
 #ifdef WIN32
 	#define glGetProcAddress(a) wglGetProcAddress(a)
 #else
-	#define glGetProcAddress(a) (void*(0))
+	#define glGetProcAddress(a) (nullptr)
 #endif
 
 
 
-#endif /*NET_MINECRAFT_CLIENT_RENDERER__gles_H__ */
+#endif /* NET_MINECRAFT_CLIENT_RENDERER__gles_H__ */

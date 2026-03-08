@@ -18,8 +18,9 @@ void SandTile::checkSlide(Level* level, int x, int y, int z)
             if (y > 0) {
                 level->setTile(x, y, z, id);
             }
-        } else {
-            FallingTile* e = new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id);
+        }
+        else {
+            FallingTile* e = new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id, level->getData(x, y, z));
             level->addEntity(e);
         }
     }
