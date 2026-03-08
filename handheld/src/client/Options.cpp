@@ -96,7 +96,7 @@ void Options::initDefaultValues() {
     viewDistance = 2;
     thirdPersonView = false;
 	useMouseForDigging = false;
-	fancyGraphics = false;
+	fancyGraphics = true;
 
 	//renderDebug = true;
 	#if !defined(PLATFORM_DESKTOP)
