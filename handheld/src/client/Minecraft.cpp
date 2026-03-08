@@ -862,6 +862,24 @@ void Minecraft::tickInput() {
 
 
 		//if (!isPressed) LOGI("Key released: %d\n", key);
+
+	#ifndef PLATFORM_DESKTOP
+		if (!options.useMouseForDigging) {
+			int passedTime = getTimeMs() - lastTickTime;
+			if (passedTime > 200) continue;
+
+			// Destroy and attack is on same button
+			if (key == options.keyDestroy.key && isPressed) {
+				BuildActionIntention bai(BuildActionIntention::BAI_REMOVE | BuildActionIntention::BAI_ATTACK);
+				handleBuildAction(&bai);
+			}
+			else // Build and use/interact is on same button
+			if (key == options.keyUse.key && isPressed) {
+				BuildActionIntention bai(BuildActionIntention::BAI_BUILD | BuildActionIntention::BAI_INTERACT);
+				handleBuildAction(&bai);
+			}
+		}
+	#endif
 	}
 
 	TIMER_POP_PUSH("tickbuild");

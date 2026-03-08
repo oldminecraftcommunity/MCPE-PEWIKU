@@ -146,6 +146,10 @@ void platform_setMouseGrabbed(bool grab) {
     }
 
 	XSync(g_dpy, False);
+    XEvent dummy;
+    while (XCheckMaskEvent(g_dpy, PointerMotionMask, &dummy)) {
+        // skip
+    }
 }
 
 // key translator X11, wasd -> WASD (˶ᵔ ᵕ ᵔ˶)
@@ -225,13 +229,13 @@ static void handleXEvent(Display* dpy, Window win, XEvent& ev, App* app) {
 	}
     case ButtonPress: {
         int button = ev.xbutton.button;
-        int x = ev.xbutton.x;
-        int y = ev.xbutton.y;
+        int x = g_mouseGrabbed ? Mouse::getX() : ev.xbutton.x;
+        int y = g_mouseGrabbed ? Mouse::getY() : ev.xbutton.y;
 
         if (button == Button4) { // Scroll Up
-    		Mouse::feed(3, 0, Mouse::getX(), Mouse::getY(), 0, 1); 
-		} else if (button == Button5) { // Scroll Down
-    		Mouse::feed(3, 0, Mouse::getX(), Mouse::getY(), 0, -1);
+            Mouse::feed(3, 0, x, y, 0, 1); 
+        } else if (button == Button5) { // Scroll Down
+            Mouse::feed(3, 0, x, y, 0, -1);
         } else {
             int action = 0;
             if (button == Button1) action = 1; // Left
@@ -246,8 +250,8 @@ static void handleXEvent(Display* dpy, Window win, XEvent& ev, App* app) {
     }
     case ButtonRelease: {
         int button = ev.xbutton.button;
-        int x = ev.xbutton.x;
-        int y = ev.xbutton.y;
+        int x = g_mouseGrabbed ? Mouse::getX() : ev.xbutton.x;
+        int y = g_mouseGrabbed ? Mouse::getY() : ev.xbutton.y;
         
         // ignore scroll wheel release events
         if (button == Button4 || button == Button5) break;
