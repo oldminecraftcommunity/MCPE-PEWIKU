@@ -2,7 +2,9 @@
 #include "../SharedConstants.h"
 #include <sstream>
 #include <ctime>
-#ifdef __linux__
+#ifdef WIN32
+#include <windows.h>
+#elif defined(__linux__)
 #include <sys/time.h>
 #endif
 
@@ -32,7 +34,9 @@ namespace Common {
 
 	long long getRawTimeMs() {
 #ifdef WIN32
-		return (long long)time(NULL) * 1000;
+		// `time()` only updates once per second on Windows, which makes
+		// guiTime jump in large steps and visibly stutter menu animations.
+		return (long long)GetTickCount64();
 #else
 		struct timeval _time;
 		gettimeofday(&_time, 0);
