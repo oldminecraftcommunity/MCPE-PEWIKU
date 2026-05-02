@@ -1214,21 +1214,6 @@
     <ClCompile Include="..\..\src\client\gui\components\Slider.cpp">
       <Filter>Source Files\client\gui\components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AppPlatform_unix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\main_android.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\main_android_java.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\main_dedicated.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\main_rpi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\App.h">
@@ -3202,20 +3187,5 @@
     <ClInclude Include="..\..\src\client\gui\components\Slider.h">
       <Filter>Source Files\client\gui\components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AppPlatform_android.h" />
-    <ClInclude Include="..\..\src\AppPlatform_android23.h" />
-    <ClInclude Include="..\..\src\AppPlatform_iOS.h" />
-    <ClInclude Include="..\..\src\AppPlatform_unix.h" />
-    <ClInclude Include="..\..\src\EglConfigPrinter.h" />
-    <ClInclude Include="..\..\src\main_android_java.h" />
-    <ClInclude Include="..\..\src\main_rpi.h" />
-    <ClInclude Include="..\..\src\main_unix.h" />
-    <ClInclude Include="..\..\src\terrain_565.h" />
-    <ClInclude Include="..\..\src\terrain_565_2.h" />
-    <ClInclude Include="..\..\src\terrain_4444.h" />
-    <ClInclude Include="..\..\src\terrain_5551.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\AppPlatform_iOS.mm" />
   </ItemGroup>
 </Project>

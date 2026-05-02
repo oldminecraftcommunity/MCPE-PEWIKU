@@ -15,7 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\AppPlatform_unix.cpp" />
     <ClCompile Include="..\..\src\AppPlatform_win32.cpp" />
     <ClCompile Include="..\..\src\client\gamemode\CreatorMode.cpp" />
     <ClCompile Include="..\..\src\client\gamemode\GameMode.cpp" />
@@ -128,10 +127,6 @@
     <ClCompile Include="..\..\src\client\sound\SoundEngine.cpp" />
     <ClCompile Include="..\..\src\locale\I18n.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
-    <ClCompile Include="..\..\src\main_android.cpp" />
-    <ClCompile Include="..\..\src\main_android_java.cpp" />
-    <ClCompile Include="..\..\src\main_dedicated.cpp" />
-    <ClCompile Include="..\..\src\main_rpi.cpp" />
     <ClCompile Include="..\..\src\nbt\Tag.cpp" />
     <ClCompile Include="..\..\src\network\ClientSideNetworkHandler.cpp" />
     <ClCompile Include="..\..\src\network\NATPunchHandler.cpp" />
@@ -363,10 +358,6 @@
     <ClInclude Include="..\..\src\App.h" />
     <ClInclude Include="..\..\src\AppPlatform.h" />
     <ClInclude Include="..\..\src\AppConstants.h" />
-    <ClInclude Include="..\..\src\AppPlatform_android.h" />
-    <ClInclude Include="..\..\src\AppPlatform_android23.h" />
-    <ClInclude Include="..\..\src\AppPlatform_iOS.h" />
-    <ClInclude Include="..\..\src\AppPlatform_unix.h" />
     <ClInclude Include="..\..\src\AppPlatform_win32.h" />
     <ClInclude Include="..\..\src\client\gamemode\CreatorMode.h" />
     <ClInclude Include="..\..\src\client\gamemode\GameMode.h" />
@@ -532,14 +523,10 @@
     <ClInclude Include="..\..\src\client\sound\SoundRepository.h" />
     <ClInclude Include="..\..\src\client\Timer.h" />
     <ClInclude Include="..\..\src\client\User.h" />
-    <ClInclude Include="..\..\src\EglConfigPrinter.h" />
     <ClInclude Include="..\..\src\ErrorCodes.h" />
     <ClInclude Include="..\..\src\LicenseCodes.h" />
     <ClInclude Include="..\..\src\locale\I18n.h" />
     <ClInclude Include="..\..\src\main_android.h" />
-    <ClInclude Include="..\..\src\main_android_java.h" />
-    <ClInclude Include="..\..\src\main_rpi.h" />
-    <ClInclude Include="..\..\src\main_unix.h" />
     <ClInclude Include="..\..\src\main_win32.h" />
     <ClInclude Include="..\..\src\nbt\ByteArrayTag.h" />
     <ClInclude Include="..\..\src\nbt\ByteTag.h" />
@@ -767,10 +754,6 @@
     <ClInclude Include="..\..\src\server\ServerLevel.h" />
     <ClInclude Include="..\..\src\server\ServerPlayer.h" />
     <ClInclude Include="..\..\src\SharedConstants.h" />
-    <ClInclude Include="..\..\src\terrain_4444.h" />
-    <ClInclude Include="..\..\src\terrain_5551.h" />
-    <ClInclude Include="..\..\src\terrain_565.h" />
-    <ClInclude Include="..\..\src\terrain_565_2.h" />
     <ClInclude Include="..\..\src\util\CollectionUtils.h" />
     <ClInclude Include="..\..\src\util\DataIO.h" />
     <ClInclude Include="..\..\src\util\IntHashMap.h" />
@@ -1029,9 +1012,6 @@
     <ClInclude Include="..\..\src\world\phys\Vec3.h" />
     <ClInclude Include="..\..\src\world\Pos.h" />
     <ClInclude Include="..\..\src\world\PosTranslator.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\AppPlatform_iOS.mm" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{61D12CAD-CC16-4024-9C45-DE97AB0465AF}</ProjectGuid>
