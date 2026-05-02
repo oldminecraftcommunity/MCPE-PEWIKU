@@ -166,6 +166,8 @@ LRESULT WINAPI windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 				POINT pt = { g_centerX, g_centerY };
 				ClientToScreen(hWnd, &pt);
+				Mouse::feed(MouseAction::ACTION_MOVE, 0, g_centerX, g_centerY, 0, 0);
+				Multitouch::feed(MouseAction::ACTION_MOVE, 0, g_centerX, g_centerY, 0);
 				SetCursorPos(pt.x, pt.y);
 			}
 		}
@@ -234,6 +236,8 @@ void platform_setMouseGrabbed(bool grab) {
 
 		POINT pt = { g_centerX, g_centerY };
 		ClientToScreen(g_hwnd, &pt);
+		Mouse::feed(MouseAction::ACTION_MOVE, 0, g_centerX, g_centerY, 0, 0);
+		Multitouch::feed(MouseAction::ACTION_MOVE, 0, g_centerX, g_centerY, 0);
 		SetCursorPos(pt.x, pt.y);
 
 		InterlockedExchange(&g_rawDeltaX, 0);
