@@ -5,10 +5,8 @@
 
 #if defined(ANDROID) && !defined(PRE_ANDROID23)
 	#include "../../platform/audio/SoundSystemSL.h"
-#elif defined(__APPLE__) || (defined(PLATFORM_DESKTOP) && !defined(_WIN32) && !defined(NO_SOUND))
+#elif defined(__APPLE__) || (defined(PLATFORM_DESKTOP) && !defined(NO_SOUND))
     #include "../../platform/audio/SoundSystemAL.h"
-#elif defined(_WIN32)
-	#include "../../platform/audio/SoundSystemWin32.h"
 #else
 	#include "../../platform/audio/SoundSystem.h"
 #endif
@@ -33,10 +31,8 @@ private:
 
 	#if defined(ANDROID) && !defined(PRE_ANDROID23) && !defined(RPI)
 		SoundSystemSL soundSystem;
-    #elif defined(__APPLE__) || (defined(PLATFORM_DESKTOP) && !defined(_WIN32) && !defined(NO_SOUND))
+    #elif defined(__APPLE__) || (defined(PLATFORM_DESKTOP) && !defined(NO_SOUND))
         SoundSystemAL soundSystem;
-	#elif defined(_WIN32)
-		SoundSystemWin32 soundSystem;
 	#else
 	    SoundSystem soundSystem;
 	#endif
@@ -89,6 +85,7 @@ private:
 	int _musicOrderIndex;
 	bool _musicWasEnabled;
 	bool _musicHasOpenTrack;
+	bool _loggedOpenALFallback;
 #endif
 };
 

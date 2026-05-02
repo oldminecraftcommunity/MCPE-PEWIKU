@@ -356,7 +356,7 @@ void SoundSystemWin32::playAt(const SoundDesc& sound, float x, float y, float z,
     if (dist > 0.001f) {
         const float rad = _listenerDeg * 0.01745329251994329577f;
         const float rightX = std::cos(rad);
-        const float rightZ = std::sin(rad);
+        const float rightZ = -std::sin(rad);
         pan = (dx * rightX + dz * rightZ) / dist;
     }
 
@@ -374,18 +374,14 @@ void SoundSystemWin32::playAt(const SoundDesc& sound, float x, float y, float z,
     char* mixed = new char[outSize];
     short* outSamples = (short*)mixed;
 
-    // Invert sign to match MC's coordinate handedness on Win32.
-    float p = -pan;
-    // Softer panning keeps sounds audible instead of hard-muting one side.
-    p *= 0.6f;
+    // direct equal-power pan so left,right placement remains obvious,not true 3D
+    float p = pan;
     if (p < -1.0f) p = -1.0f;
     if (p > 1.0f) p = 1.0f;
 
     const float theta = (p + 1.0f) * 0.78539816339f; // [0..pi/2]
     float panL = std::cos(theta);
     float panR = std::sin(theta);
-    panL = 0.2f + 0.8f * panL;
-    panR = 0.2f + 0.8f * panR;
 
     for (int i = 0; i < numFrames; ++i) {
         float mono = 0.0f;

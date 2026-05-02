@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\src\network\ServerSideNetworkHandler.cpp" />
     <ClCompile Include="..\..\src\NinecraftApp.cpp" />
     <ClCompile Include="..\..\src\Performance.cpp" />
+    <ClCompile Include="..\..\src\platform\audio\SoundSystemAL.cpp" />
     <ClCompile Include="..\..\src\platform\audio\SoundSystemWin32.cpp" />
     <ClCompile Include="..\..\src\platform\CThread.cpp" />
     <ClCompile Include="..\..\src\platform\input\Controller.cpp" />
@@ -1026,6 +1027,8 @@
     <ClInclude Include="..\..\src\world\PosTranslator.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\lib\bin\OpenAL32.dll" />
+    <None Include="..\..\lib\bin\OpenAL64.dll" />
     <None Include="..\..\src\client\sound\data\bow.pcm" />
     <None Include="..\..\src\client\sound\data\bowhit1.pcm" />
     <None Include="..\..\src\client\sound\data\bowhit2.pcm" />

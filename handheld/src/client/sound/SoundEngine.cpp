@@ -2,6 +2,7 @@
 #include "../Options.h"
 #include "../Minecraft.h"
 #include "../../world/entity/Mob.h"
+#include "../../platform/log.h"
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -68,7 +69,8 @@ SoundEngine::SoundEngine( float maxDistance )
 #ifdef _WIN32
 ,	_musicOrderIndex(0),
 	_musicWasEnabled(false),
-	_musicHasOpenTrack(false)
+	_musicHasOpenTrack(false),
+	_loggedOpenALFallback(false)
 #endif
 {
 
@@ -213,12 +215,16 @@ void SoundEngine::init( Minecraft* mc, Options* options )
 #ifdef _WIN32
 	discoverMusicTracks();
 	_musicWasEnabled = false;
+	if (!soundSystem.isAvailable() && !_loggedOpenALFallback) {
+		_loggedOpenALFallback = true;
+		LOGI("OpenAL library unavailable on Win32, audio playback is disabled...\n");
+	}
 #endif
 }
 
 void SoundEngine::enable( bool status )
 {
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(_WIN32)
 	soundSystem.enable(status);
 #endif
 }
@@ -394,6 +400,29 @@ void SoundEngine::playUI(const std::string& name, float volume, float pitch) {
 
 	volume = Mth::clamp(volume, 0.0f, 1.0f);
 	if (/*!loaded || */options->sound == 0 || volume <= 0) return;
+
+	SoundDesc sound;
+	if (sounds.get(name, sound)) {
+		soundSystem.playAt(sound, 0, 0, 0, volume, pitch);
+	}
+}
+#elif defined(_WIN32)
+void SoundEngine::play(const std::string& name, float x, float y, float z, float volume, float pitch) {
+	if ((volume *= options->sound) <= 0) return;
+
+	volume = Mth::clamp(volume * _getVolumeMult(x, y, z), 0.0f, 1.0f);
+	if (options->sound == 0 || volume <= 0) return;
+
+	SoundDesc sound;
+	if (sounds.get(name, sound)) {
+		soundSystem.playAt(sound, x - _x, y - _y, z - _z, volume, pitch);
+	}
+}
+void SoundEngine::playUI(const std::string& name, float volume, float pitch) {
+	if ((volume *= options->sound) <= 0) return;
+
+	volume = Mth::clamp(volume, 0.0f, 1.0f);
+	if (options->sound == 0 || volume <= 0) return;
 
 	SoundDesc sound;
 	if (sounds.get(name, sound)) {

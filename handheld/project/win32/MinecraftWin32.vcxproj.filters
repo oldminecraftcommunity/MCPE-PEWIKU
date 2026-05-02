@@ -1232,6 +1232,9 @@
     <ClCompile Include="..\..\src\platform\audio\SoundSystemWin32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\platform\audio\SoundSystemAL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\App.h">
@@ -3322,5 +3325,7 @@
     <None Include="..\..\src\client\sound\data\zpigdeath.pcm" />
     <None Include="..\..\src\client\sound\data\zpighurt1.pcm" />
     <None Include="..\..\src\client\sound\data\zpighurt2.pcm" />
+    <None Include="..\..\lib\bin\OpenAL32.dll" />
+    <None Include="..\..\lib\bin\OpenAL64.dll" />
   </ItemGroup>
 </Project>
