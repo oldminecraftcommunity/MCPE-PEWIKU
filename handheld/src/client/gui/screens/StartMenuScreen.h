@@ -6,6 +6,15 @@
 
 #include "../components/ImageButton.h"
 
+class SettingsButton: public ImageButton
+{
+public:
+	SettingsButton(int id, const std::string& msg) : ImageButton(id, msg) {}
+
+protected:
+	bool isSecondImage(bool hovered) { return false; }
+};
+
 class StartMenuScreen: public Screen
 {
 public:
@@ -26,7 +35,7 @@ private:
 
 	Button playButton;
 	Button playMultiplayer;
-	ImageButton settingsButton;
+	SettingsButton settingsButton;
 	Button buyButton;
 
 	std::string copyrightString;

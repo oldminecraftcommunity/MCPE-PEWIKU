@@ -137,6 +137,8 @@ void StartMenuScreen::init() {
 	ImageDef def;
 	def.name = "gui/touchgui.png";
 	def.setSrc(IntRectangle(218, 0, 22, 21));
+	def.x = 5;
+	def.y = 5;
 	def.width = 22;
 	def.height = 21;
 	settingsButton.setImageDef(def, false);
