@@ -348,9 +348,8 @@ void SoundSystemWin32::playAt(const SoundDesc& sound, float x, float y, float z,
     cleanupStoppedVoices();
     if ((int)_voices.size() >= MAX_VOICES) return;
 
-    // Horizontal pan based on listener yaw.
-    const float dx = x - _listenerX;
-    const float dz = z - _listenerZ;
+    const float dx = x;
+    const float dz = z;
     const float dist = std::sqrt(dx * dx + dz * dz);
 
     float pan = 0.0f;
