@@ -102,7 +102,6 @@ public:
 			if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
 				png_set_tRNS_to_alpha(pngPtr);
 
-			// png_set_gray_to_rgb
 			if (colorType == PNG_COLOR_TYPE_GRAY ||
 				colorType == PNG_COLOR_TYPE_GRAY_ALPHA)
 			{
@@ -117,7 +116,8 @@ public:
 				png_set_filler(pngPtr, 0xFF, PNG_FILLER_AFTER);
 			}
 
-			// Set up the texdata properties
+			png_read_update_info(pngPtr, infoPtr);
+
 			out.w = png_get_image_width(pngPtr, infoPtr);
 			out.h = png_get_image_height(pngPtr, infoPtr);
 

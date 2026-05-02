@@ -26,6 +26,7 @@ const int rgbActive = 0xfff0f0f0;
 const int rgbInactive = 0xc0635558;
 const int rgbInactiveShadow = 0xc0aaaaaa;
 
+namespace {
 class CategoryButton: public ImageButton {
 	typedef ImageButton super;
 public:
@@ -53,6 +54,7 @@ private:
 	NinePatchLayer* stateNormal;
 	NinePatchLayer* statePressed;
 };
+}
 
 PaneCraftingScreen::PaneCraftingScreen(int craftingSize)
 :	craftingSize(craftingSize),

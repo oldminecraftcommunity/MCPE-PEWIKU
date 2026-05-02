@@ -21,6 +21,8 @@
     <ClCompile Include="..\..\src\client\gamemode\CreativeMode.cpp" />
     <ClCompile Include="..\..\src\client\gamemode\SurvivalMode.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\Button.cpp" />
+    <ClCompile Include="..\..\src\client\gui\components\CategoryButton.cpp" />
+    <ClCompile Include="..\..\src\client\gui\components\GButton.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\GuiElement.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\GuiElementContainer.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\InventoryPane.cpp" />
@@ -38,6 +40,8 @@
     <ClCompile Include="..\..\src\client\gui\components\SmallButton.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\ImageButton.cpp" />
     <ClCompile Include="..\..\src\client\gui\components\TextBox.cpp" />
+    <ClCompile Include="..\..\src\client\gui\components\touch\TButton.cpp" />
+    <ClCompile Include="..\..\src\client\gui\components\touch\THeader.cpp" />
     <ClCompile Include="..\..\src\client\gui\Font.cpp" />
     <ClCompile Include="..\..\src\client\gui\Gui.cpp" />
     <ClCompile Include="..\..\src\client\gui\GuiComponent.cpp" />
@@ -138,6 +142,7 @@
     <ClCompile Include="..\..\src\network\ServerSideNetworkHandler.cpp" />
     <ClCompile Include="..\..\src\NinecraftApp.cpp" />
     <ClCompile Include="..\..\src\Performance.cpp" />
+    <ClCompile Include="..\..\src\platform\audio\SoundSystemWin32.cpp" />
     <ClCompile Include="..\..\src\platform\CThread.cpp" />
     <ClCompile Include="..\..\src\platform\input\Controller.cpp" />
     <ClCompile Include="..\..\src\platform\input\Keyboard.cpp" />
@@ -239,6 +244,7 @@
     <ClCompile Include="..\..\src\server\ServerLevel.cpp" />
     <ClCompile Include="..\..\src\server\ServerPlayer.cpp" />
     <ClCompile Include="..\..\src\SharedConstants.cpp" />
+    <ClCompile Include="..\..\src\util\Common.cpp" />
     <ClCompile Include="..\..\src\util\DataIO.cpp" />
     <ClCompile Include="..\..\src\util\Mth.cpp" />
     <ClCompile Include="..\..\src\util\PerfRenderer.cpp" />
@@ -364,6 +370,8 @@
     <ClInclude Include="..\..\src\client\gamemode\SurvivalMode.h" />
     <ClInclude Include="..\..\src\client\gamemode\CreativeMode.h" />
     <ClInclude Include="..\..\src\client\gui\components\Button.h" />
+    <ClInclude Include="..\..\src\client\gui\components\CategoryButton.h" />
+    <ClInclude Include="..\..\src\client\gui\components\GButton.h" />
     <ClInclude Include="..\..\src\client\gui\components\GuiElement.h" />
     <ClInclude Include="..\..\src\client\gui\components\GuiElementContainer.h" />
     <ClInclude Include="..\..\src\client\gui\components\InventoryPane.h" />
@@ -381,6 +389,8 @@
     <ClInclude Include="..\..\src\client\gui\components\SmallButton.h" />
     <ClInclude Include="..\..\src\client\gui\components\ImageButton.h" />
     <ClInclude Include="..\..\src\client\gui\components\TextBox.h" />
+    <ClInclude Include="..\..\src\client\gui\components\touch\TButton.h" />
+    <ClInclude Include="..\..\src\client\gui\components\touch\THeader.h" />
     <ClInclude Include="..\..\src\client\gui\Font.h" />
     <ClInclude Include="..\..\src\client\gui\Gui.h" />
     <ClInclude Include="..\..\src\client\gui\GuiComponent.h" />
@@ -601,6 +611,7 @@
     <ClInclude Include="..\..\src\Performance.h" />
     <ClInclude Include="..\..\src\platform\audio\SoundSystem.h" />
     <ClInclude Include="..\..\src\platform\audio\SoundSystemSL.h" />
+    <ClInclude Include="..\..\src\platform\audio\SoundSystemWin32.h" />
     <ClInclude Include="..\..\src\platform\CThread.h" />
     <ClInclude Include="..\..\src\platform\file.h" />
     <ClInclude Include="..\..\src\platform\input\Controller.h" />
@@ -755,6 +766,7 @@
     <ClInclude Include="..\..\src\server\ServerPlayer.h" />
     <ClInclude Include="..\..\src\SharedConstants.h" />
     <ClInclude Include="..\..\src\util\CollectionUtils.h" />
+    <ClInclude Include="..\..\src\util\Common.h" />
     <ClInclude Include="..\..\src\util\DataIO.h" />
     <ClInclude Include="..\..\src\util\IntHashMap.h" />
     <ClInclude Include="..\..\src\util\MemUtils.h" />
@@ -1013,6 +1025,117 @@
     <ClInclude Include="..\..\src\world\Pos.h" />
     <ClInclude Include="..\..\src\world\PosTranslator.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\client\sound\data\bow.pcm" />
+    <None Include="..\..\src\client\sound\data\bowhit1.pcm" />
+    <None Include="..\..\src\client\sound\data\bowhit2.pcm" />
+    <None Include="..\..\src\client\sound\data\bowhit3.pcm" />
+    <None Include="..\..\src\client\sound\data\bowhit4.pcm" />
+    <None Include="..\..\src\client\sound\data\break.pcm" />
+    <None Include="..\..\src\client\sound\data\burp.pcm" />
+    <None Include="..\..\src\client\sound\data\chestclosed.pcm" />
+    <None Include="..\..\src\client\sound\data\chestopen.pcm" />
+    <None Include="..\..\src\client\sound\data\chicken1.pcm" />
+    <None Include="..\..\src\client\sound\data\chicken2.pcm" />
+    <None Include="..\..\src\client\sound\data\chicken3.pcm" />
+    <None Include="..\..\src\client\sound\data\chickenhurt1.pcm" />
+    <None Include="..\..\src\client\sound\data\chickenhurt2.pcm" />
+    <None Include="..\..\src\client\sound\data\chickenplop.pcm" />
+    <None Include="..\..\src\client\sound\data\click.pcm" />
+    <None Include="..\..\src\client\sound\data\cloth1.pcm" />
+    <None Include="..\..\src\client\sound\data\cloth2.pcm" />
+    <None Include="..\..\src\client\sound\data\cloth3.pcm" />
+    <None Include="..\..\src\client\sound\data\cloth4.pcm" />
+    <None Include="..\..\src\client\sound\data\cow1.pcm" />
+    <None Include="..\..\src\client\sound\data\cow2.pcm" />
+    <None Include="..\..\src\client\sound\data\cow3.pcm" />
+    <None Include="..\..\src\client\sound\data\cow4.pcm" />
+    <None Include="..\..\src\client\sound\data\cowhurt1.pcm" />
+    <None Include="..\..\src\client\sound\data\cowhurt2.pcm" />
+    <None Include="..\..\src\client\sound\data\cowhurt3.pcm" />
+    <None Include="..\..\src\client\sound\data\creeper1.pcm" />
+    <None Include="..\..\src\client\sound\data\creeper2.pcm" />
+    <None Include="..\..\src\client\sound\data\creeper3.pcm" />
+    <None Include="..\..\src\client\sound\data\creeper4.pcm" />
+    <None Include="..\..\src\client\sound\data\creeperdeath.pcm" />
+    <None Include="..\..\src\client\sound\data\door_close.pcm" />
+    <None Include="..\..\src\client\sound\data\door_open.pcm" />
+    <None Include="..\..\src\client\sound\data\eat1.pcm" />
+    <None Include="..\..\src\client\sound\data\eat2.pcm" />
+    <None Include="..\..\src\client\sound\data\eat3.pcm" />
+    <None Include="..\..\src\client\sound\data\explode.pcm" />
+    <None Include="..\..\src\client\sound\data\fallbig1.pcm" />
+    <None Include="..\..\src\client\sound\data\fallbig2.pcm" />
+    <None Include="..\..\src\client\sound\data\fallsmall.pcm" />
+    <None Include="..\..\src\client\sound\data\fire.pcm" />
+    <None Include="..\..\src\client\sound\data\fuse.pcm" />
+    <None Include="..\..\src\client\sound\data\glass1.pcm" />
+    <None Include="..\..\src\client\sound\data\glass2.pcm" />
+    <None Include="..\..\src\client\sound\data\glass3.pcm" />
+    <None Include="..\..\src\client\sound\data\grass1.pcm" />
+    <None Include="..\..\src\client\sound\data\grass2.pcm" />
+    <None Include="..\..\src\client\sound\data\grass3.pcm" />
+    <None Include="..\..\src\client\sound\data\grass4.pcm" />
+    <None Include="..\..\src\client\sound\data\gravel1.pcm" />
+    <None Include="..\..\src\client\sound\data\gravel2.pcm" />
+    <None Include="..\..\src\client\sound\data\gravel3.pcm" />
+    <None Include="..\..\src\client\sound\data\gravel4.pcm" />
+    <None Include="..\..\src\client\sound\data\hurt.pcm" />
+    <None Include="..\..\src\client\sound\data\ignite.pcm" />
+    <None Include="..\..\src\client\sound\data\pig1.pcm" />
+    <None Include="..\..\src\client\sound\data\pig2.pcm" />
+    <None Include="..\..\src\client\sound\data\pig3.pcm" />
+    <None Include="..\..\src\client\sound\data\pigdeath.pcm" />
+    <None Include="..\..\src\client\sound\data\pop.pcm" />
+    <None Include="..\..\src\client\sound\data\pop2.pcm" />
+    <None Include="..\..\src\client\sound\data\sand1.pcm" />
+    <None Include="..\..\src\client\sound\data\sand2.pcm" />
+    <None Include="..\..\src\client\sound\data\sand3.pcm" />
+    <None Include="..\..\src\client\sound\data\sand4.pcm" />
+    <None Include="..\..\src\client\sound\data\sheep1.pcm" />
+    <None Include="..\..\src\client\sound\data\sheep2.pcm" />
+    <None Include="..\..\src\client\sound\data\sheep3.pcm" />
+    <None Include="..\..\src\client\sound\data\skeleton1.pcm" />
+    <None Include="..\..\src\client\sound\data\skeleton2.pcm" />
+    <None Include="..\..\src\client\sound\data\skeleton3.pcm" />
+    <None Include="..\..\src\client\sound\data\skeletondeath.pcm" />
+    <None Include="..\..\src\client\sound\data\skeletonhurt1.pcm" />
+    <None Include="..\..\src\client\sound\data\skeletonhurt2.pcm" />
+    <None Include="..\..\src\client\sound\data\skeletonhurt3.pcm" />
+    <None Include="..\..\src\client\sound\data\skeletonhurt4.pcm" />
+    <None Include="..\..\src\client\sound\data\spider1.pcm" />
+    <None Include="..\..\src\client\sound\data\spider2.pcm" />
+    <None Include="..\..\src\client\sound\data\spider3.pcm" />
+    <None Include="..\..\src\client\sound\data\spider4.pcm" />
+    <None Include="..\..\src\client\sound\data\spiderdeath.pcm" />
+    <None Include="..\..\src\client\sound\data\splash.pcm" />
+    <None Include="..\..\src\client\sound\data\stone1.pcm" />
+    <None Include="..\..\src\client\sound\data\stone2.pcm" />
+    <None Include="..\..\src\client\sound\data\stone3.pcm" />
+    <None Include="..\..\src\client\sound\data\stone4.pcm" />
+    <None Include="..\..\src\client\sound\data\wood1.pcm" />
+    <None Include="..\..\src\client\sound\data\wood2.pcm" />
+    <None Include="..\..\src\client\sound\data\wood3.pcm" />
+    <None Include="..\..\src\client\sound\data\wood4.pcm" />
+    <None Include="..\..\src\client\sound\data\zombie1.pcm" />
+    <None Include="..\..\src\client\sound\data\zombie2.pcm" />
+    <None Include="..\..\src\client\sound\data\zombie3.pcm" />
+    <None Include="..\..\src\client\sound\data\zombiedeath.pcm" />
+    <None Include="..\..\src\client\sound\data\zombiehurt1.pcm" />
+    <None Include="..\..\src\client\sound\data\zombiehurt2.pcm" />
+    <None Include="..\..\src\client\sound\data\zpig1.pcm" />
+    <None Include="..\..\src\client\sound\data\zpig2.pcm" />
+    <None Include="..\..\src\client\sound\data\zpig3.pcm" />
+    <None Include="..\..\src\client\sound\data\zpig4.pcm" />
+    <None Include="..\..\src\client\sound\data\zpigangry1.pcm" />
+    <None Include="..\..\src\client\sound\data\zpigangry2.pcm" />
+    <None Include="..\..\src\client\sound\data\zpigangry3.pcm" />
+    <None Include="..\..\src\client\sound\data\zpigangry4.pcm" />
+    <None Include="..\..\src\client\sound\data\zpigdeath.pcm" />
+    <None Include="..\..\src\client\sound\data\zpighurt1.pcm" />
+    <None Include="..\..\src\client\sound\data\zpighurt2.pcm" />
+    <None Include="..\..\src\client\sound\SoundEngine.mm" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{61D12CAD-CC16-4024-9C45-DE97AB0465AF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -1072,9 +1195,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>GLDEBUG;OPENGL_ES;WIN32;PLATFORM_DESKTOP;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLDEBUG;WIN32;PLATFORM_DESKTOP;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <UseDynamicDebugging>true</UseDynamicDebugging>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -11,6 +11,11 @@
 	#endif
 #endif
 
+// windows build should use OpenGL GLEW headers instead of GLES headers even if OPENGL_ES is defined (as in DEBUG config)
+#if defined(_WIN32) && defined(OPENGL_ES)
+#undef OPENGL_ES
+#endif
+
 #if defined(ANDROID) || defined(__APPLE__) || defined(RPI)
 	#define OPENGL_ES
 #endif

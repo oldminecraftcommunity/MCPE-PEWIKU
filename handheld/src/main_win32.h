@@ -1,6 +1,6 @@
+#include <winsock2.h>
 #include <windows.h>
 #include <windowsx.h>
-#include <WinSock2.h>
 #include <process.h>
 #include <cstdio>
 #include <cstring>
