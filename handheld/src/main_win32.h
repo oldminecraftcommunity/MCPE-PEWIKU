@@ -276,7 +276,7 @@ int main(void) {
 	SetForegroundWindow(hwnd);
 	SetFocus(hwnd);
 
-	while (ShowCursor(FALSE) >= 0);
+	ShowCursor(TRUE);
 
 	RAWINPUTDEVICE rid;
 	rid.usUsagePage = 0x01;
