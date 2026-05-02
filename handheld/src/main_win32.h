@@ -19,6 +19,8 @@ static int g_centerX = 0;
 static int g_centerY = 0;
 static volatile LONG g_rawDeltaX = 0;
 static volatile LONG g_rawDeltaY = 0;
+static int g_savedMouseX = 0;
+static int g_savedMouseY = 0;
 
 void platform_setMouseGrabbed(bool grab);
 
@@ -219,6 +221,11 @@ void platform_setMouseGrabbed(bool grab) {
 		RECT rect;
 		GetClientRect(g_hwnd, &rect);
 
+		POINT saved;
+		GetCursorPos(&saved);
+		g_savedMouseX = saved.x;
+		g_savedMouseY = saved.y;
+
 		g_centerX = (rect.right - rect.left) / 2;
 		g_centerY = (rect.bottom - rect.top) / 2;
 
@@ -231,15 +238,19 @@ void platform_setMouseGrabbed(bool grab) {
 
 		InterlockedExchange(&g_rawDeltaX, 0);
 		InterlockedExchange(&g_rawDeltaY, 0);
+		while (ShowCursor(FALSE) >= 0);
 	}
 	else {
 		ClipCursor(NULL);
 
 		POINT pt;
-		GetCursorPos(&pt);
+		pt.x = g_savedMouseX;
+		pt.y = g_savedMouseY;
 		ScreenToClient(g_hwnd, &pt);
 		Mouse::feed(MouseAction::ACTION_MOVE, 0, pt.x, pt.y, 0, 0);
 		Multitouch::feed(MouseAction::ACTION_MOVE, 0, pt.x, pt.y, 0);
+		SetCursorPos(g_savedMouseX, g_savedMouseY);
+		while (ShowCursor(TRUE) < 0);
 	}
 }
 
