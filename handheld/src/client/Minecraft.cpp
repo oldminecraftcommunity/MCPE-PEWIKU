@@ -126,7 +126,7 @@ int Minecraft::customDebugId = Minecraft::CDI_NONE;
 	#pragma warning( disable : 4355 ) // 'this' pointer in initialization list which is perfectly legal
 #endif
 
-bool Minecraft::useAmbientOcclusion = false;
+bool Minecraft::useAmbientOcclusion = true;
 
 Minecraft::Minecraft()
 :	user(NULL),

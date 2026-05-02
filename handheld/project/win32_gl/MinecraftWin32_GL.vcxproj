@@ -65,7 +65,8 @@
       <AdditionalDependencies>ws2_32.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)libs\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)libs\*.dll" "$(TargetDir)"
+xcopy /e /i /y "$(ProjectDir)..\..\data" "$(TargetDir)data" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -87,7 +88,8 @@
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)libs\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)libs\*.dll" "$(TargetDir)"
+xcopy /e /i /y "$(ProjectDir)..\..\data" "$(TargetDir)data" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -1212,7 +1212,8 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>for /r "$(ProjectDir)..\..\lib\bin" %%f in (*.dll) do @copy "%%f" "$(TargetDir)" &gt;nul</Command>
+      <Command>for /r "$(ProjectDir)..\..\lib\bin" %%f in (*.dll) do @copy "%%f" "$(TargetDir)" &gt;nul
+xcopy /e /i /y "$(ProjectDir)..\..\data" "$(TargetDir)data" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug DEMO|Win32'">
@@ -1230,6 +1231,10 @@
       <AdditionalDependencies>opengl32.lib;glew32.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>for /r "$(ProjectDir)..\..\lib\bin" %%f in (*.dll) do @copy "%%f" "$(TargetDir)" &gt;nul
+xcopy /e /i /y "$(ProjectDir)..\..\data" "$(TargetDir)data" &gt;nul</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -1251,7 +1256,8 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>for /r "$(ProjectDir)..\..\lib\bin" %%f in (*.dll) do @copy "%%f" "$(TargetDir)</Command>
+      <Command>for /r "$(ProjectDir)..\..\lib\bin" %%f in (*.dll) do @copy "%%f" "$(TargetDir)" &gt;nul
+xcopy /e /i /y "$(ProjectDir)..\..\data" "$(TargetDir)data" &gt;nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
