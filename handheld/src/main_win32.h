@@ -256,6 +256,22 @@ void toggleResolutions(HWND hwnd, int direction) {
 LRESULT WINAPI windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg)
 	{
+	case WM_SYSCOMMAND:
+		// no menu mode
+		if ((wParam & 0xFFF0) == SC_KEYMENU) {
+			return 0;
+		}
+		break;
+
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		if (wParam == VK_F10) {
+			unsigned char key = Keyboard::KEY_F10;
+			Keyboard::feed(key, uMsg == WM_SYSKEYDOWN ? 1 : 0);
+			return 0;
+		}
+		break;
+
 	case WM_KEYDOWN: {
 		if (wParam == VK_F11) {
 			toggleFullscreen(hWnd);
