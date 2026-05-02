@@ -154,6 +154,9 @@ void StartMenuScreen::init() {
 
 	copyrightString = "\xffMojang AB";
 	gameVersion = Common::getGameVersionString();
+	#if defined(DEBUG)
+		gameVersion = gameVersion + " [DEBUG]";
+	#endif
 
 	settingsButton.active = true;
 	settingsButton.visible = true;

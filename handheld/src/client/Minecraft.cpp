@@ -778,7 +778,7 @@ void Minecraft::tickInput() {
 				}
 
 				if (key == Keyboard::KEY_L)
-					options.renderDistance = (options.renderDistance + 1) % 4;
+					options.viewDistance = (options.viewDistance + 1) % 4;
 
 				if (key == Keyboard::KEY_U) {
 					onGraphicsReset();
