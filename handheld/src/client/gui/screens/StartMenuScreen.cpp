@@ -13,12 +13,52 @@
 #include "../../renderer/Textures.h"
 #include "../../../AppPlatform.h"
 #include "../components/ImageButton.h"
+#include "../components/NinePatch.h"
 #include "../../../util/Mth.h"
 #include "../../../util/Random.h"
 #include "../../../util/Common.h"
 #include "../../../locale/I18n.h"
 #include <cmath>
 int StartMenuScreen::currentSplash = -1;
+
+SettingsButton::SettingsButton(int id, const std::string& msg)
+	: ImageButton(id, msg)
+	, normalBg(NULL)
+	, pressedBg(NULL) {
+}
+
+SettingsButton::~SettingsButton() {
+	if (normalBg != NULL) {
+		delete normalBg;
+		normalBg = NULL;
+	}
+	if (pressedBg != NULL) {
+		delete pressedBg;
+		pressedBg = NULL;
+	}
+}
+
+void SettingsButton::setBackgrounds(NinePatchLayer* normalBg, NinePatchLayer* pressedBg) {
+	if (this->normalBg != NULL) {
+		delete this->normalBg;
+	}
+	if (this->pressedBg != NULL) {
+		delete this->pressedBg;
+	}
+	this->normalBg = normalBg;
+	this->pressedBg = pressedBg;
+}
+
+void SettingsButton::renderBg(Minecraft* minecraft, int xm, int ym) {
+	NinePatchLayer* layer = normalBg;
+	if ((active && _currentlyDown && hovered(minecraft, xm, ym)) || selected) {
+		layer = pressedBg;
+	}
+	if (layer != NULL) {
+		layer->setSize((float)width, (float)height);
+		layer->draw(Tesselator::instance, (float)x, (float)y);
+	}
+}
 
 static const char* gSplashes[] = {
 	"Scientific!", "Cooler than Spock!", "Collaborate and listen!", "Never dig down!",
@@ -144,6 +184,10 @@ void StartMenuScreen::init() {
 	settingsButton.setImageDef(def, false);
 	settingsButton.width = 32;
 	settingsButton.height = 32;
+	NinePatchFactory settingsBg(minecraft->textures, "gui/spritesheet.png");
+	settingsButton.setBackgrounds(
+		settingsBg.createSymmetrical(IntRectangle(112, 0, 8, 67), 2, 2, 32.0f, 32.0f),
+		settingsBg.createSymmetrical(IntRectangle(120, 0, 8, 67), 2, 2, 32.0f, 32.0f));
 
 	buttons.push_back(&playButton);
 	buttons.push_back(&playMultiplayer);

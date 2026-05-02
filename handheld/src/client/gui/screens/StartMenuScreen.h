@@ -6,13 +6,23 @@
 
 #include "../components/ImageButton.h"
 
+class NinePatchLayer;
+
 class SettingsButton: public ImageButton
 {
 public:
-	SettingsButton(int id, const std::string& msg) : ImageButton(id, msg) {}
+	SettingsButton(int id, const std::string& msg);
+	virtual ~SettingsButton();
+
+	void setBackgrounds(NinePatchLayer* normalBg, NinePatchLayer* pressedBg);
 
 protected:
+	void renderBg(Minecraft* minecraft, int xm, int ym);
 	bool isSecondImage(bool hovered) { return false; }
+
+private:
+	NinePatchLayer* normalBg;
+	NinePatchLayer* pressedBg;
 };
 
 class StartMenuScreen: public Screen
