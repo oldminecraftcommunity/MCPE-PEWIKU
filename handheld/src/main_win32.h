@@ -376,7 +376,12 @@ LRESULT WINAPI windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	case WM_SIZE:
 		if (g_app) {
-			g_app->setSize(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			int width = GET_X_LPARAM(lParam);
+			int height = GET_Y_LPARAM(lParam);
+			if (wParam == SIZE_MINIMIZED || width <= 0 || height <= 0)
+				return 0;
+
+			g_app->setSize(width, height);
 
 			if (g_mouseGrabbed) {
 				RECT rect;

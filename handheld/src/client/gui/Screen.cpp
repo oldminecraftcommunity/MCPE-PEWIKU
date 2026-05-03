@@ -119,16 +119,6 @@ void Screen::mouseEvent()
 	} else {
 		mouseReleased(xm, ym, Mouse::getEventButton());
 	}
-
-	if (Mouse::getEventButtonState()) {
-		int xm = e.x * width / minecraft->width;
-		int ym = e.y * height / minecraft->height - 1;
-		mouseClicked(xm, ym, Mouse::getEventButton());
-	} else {
-		int xm = e.x * width / minecraft->width;
-		int ym = e.y * height / minecraft->height - 1;
-		mouseReleased(xm, ym, Mouse::getEventButton());
-	}
 }
 
 void Screen::keyboardEvent()
