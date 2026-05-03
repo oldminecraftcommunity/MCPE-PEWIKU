@@ -2,6 +2,7 @@
 #include "OptionStrings.h"
 #include "Minecraft.h"
 #include "../platform/log.h"
+#include "../util/Mth.h"
 #include "../world/Difficulty.h"
 #include <cmath>
 #include <sstream>
@@ -291,6 +292,7 @@ void Options::load()
 		if (key == OptionStrings::Multiplayer_Username) username = value;
 		else if (key == OptionStrings::Game_DifficultyLevel) readInt(value, difficulty);
 		else if (key == OptionStrings::Game_ThirdPerson) readBool(value, thirdPersonView);
+		else if (key == OptionStrings::Graphics_Fov) readInt(value, fov);
 		else if (key == OptionStrings::Graphics_PixelsPerMilimeter) readFloat(value, pixelsPerMillimeter);
 		else if (key == OptionStrings::Multiplayer_ServerVisible) readBool(value, serverVisible);
 		else if (key == OptionStrings::Controls_Sensitivity) readFloat(value, sensitivity);
@@ -397,6 +399,8 @@ void Options::set(const Option* item, float value) {
 		sound = value;
 	} else if (item == &Option::SENSITIVITY) {
 		sensitivity = value;
+	} else if (item == &Option::FOV) {
+		fov = Mth::clamp(Mth::floor(value + 0.5f), (int)FOV_MIN_VALUE, (int)FOV_MAX_VALUE);
 	} else if (item == &Option::PIXELS_PER_MILLIMETER) {
 		pixelsPerMillimeter = value;
 	}
@@ -438,6 +442,8 @@ float Options::getProgressValue(const Option* item) {
 		return sound;
 	if (item == &Option::SENSITIVITY)
 		return sensitivity;
+	if (item == &Option::FOV)
+		return float(fov);
 	if (item == &Option::PIXELS_PER_MILLIMETER)
 		return pixelsPerMillimeter;
 	return 0.0f;
@@ -476,6 +482,8 @@ bool Options::getBooleanValue(const Option* item) {
 float Options::getProgrssMin(const Option* item) {
 	if (item == &Option::MUSIC || item == &Option::SOUND || item == &Option::SENSITIVITY)
 		return 0.0f;
+	if (item == &Option::FOV)
+		return FOV_MIN_VALUE;
 	if (item == &Option::PIXELS_PER_MILLIMETER)
 		return 3.0f;
 	return 0.0f;
@@ -484,6 +492,8 @@ float Options::getProgrssMin(const Option* item) {
 float Options::getProgrssMax(const Option* item) {
 	if (item == &Option::MUSIC || item == &Option::SOUND || item == &Option::SENSITIVITY)
 		return 1.0f;
+	if (item == &Option::FOV)
+		return FOV_MAX_VALUE;
 	if (item == &Option::PIXELS_PER_MILLIMETER)
 		return 12.0f;
 	return 1.0f;
