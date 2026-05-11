@@ -153,7 +153,9 @@ void InventoryPane::renderBatch( std::vector<GridItem>& items, float alpha )
 			if (!citem || citem->isNull()) continue;
 
 			if (citem->isDamaged()) {
-				ItemRenderer::renderGuiItemDecorations(citem, item.xf + 8, item.yf + 12);
+				float xx = Gui::floorAlignToScreenPixel(item.xf + BorderPixels + 4);
+				float yy = Gui::floorAlignToScreenPixel(item.yf + BorderPixels + 4);
+				ItemRenderer::renderGuiItemDecorations(citem, xx, yy);
 			}
 		}
 
